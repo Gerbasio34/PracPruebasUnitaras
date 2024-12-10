@@ -1,4 +1,4 @@
-package micromobilidad.data;
+package data;
 
 import org.junit.jupiter.api.Test;
 

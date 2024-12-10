@@ -1,4 +1,4 @@
-package micromobilidad.data;
+package data;
 /**
  * Essential data classes
  */
