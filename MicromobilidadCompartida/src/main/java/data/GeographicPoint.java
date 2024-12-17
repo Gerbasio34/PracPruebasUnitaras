@@ -10,6 +10,8 @@ final public class GeographicPoint {
         this.latitude = lat;
         this.longitude = lon;
     }
+
+    // Getters
     public float getLatitude () { return latitude; }
     public float getLongitude () { return longitude; }
     @Override
