@@ -1,6 +1,7 @@
 package services.smartfeatures;
 
 import data.VehicleID;
+import exception.CorruptedImgException;
 
 import java.awt.image.BufferedImage;
 
