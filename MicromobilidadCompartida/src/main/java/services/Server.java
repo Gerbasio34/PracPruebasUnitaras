@@ -4,6 +4,7 @@ import data.GeographicPoint;
 import data.StationID;
 import data.UserAccount;
 import data.VehicleID;
+import exception.PMVNotAvailException;
 
 import java.math.BigDecimal;
 import java.net.ConnectException;
