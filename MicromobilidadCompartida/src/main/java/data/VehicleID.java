@@ -6,9 +6,8 @@ import java.util.Objects;
  * Essential data classes
  */
 final public class VehicleID {
-    private GeographicPoint location;
     private final String id;
-    public VehicleID (GeographicPoint location) {
+    public VehicleID () {
         throw new IllegalArgumentException("VehicleID cannot be null");
     }
 
@@ -20,20 +19,11 @@ final public class VehicleID {
             throw new IllegalArgumentException("Invalid VehicleID format. Expected 'VH-123456-name'");
         }
         this.id = id;
-        this.location = location;
     }
 
     // Getters
-    public GeographicPoint getLocation() {
-        return location;
-    }
     public String getId() {
         return id;
-    }
-
-    // Setters
-    public void setLocation(GeographicPoint location) {
-        this.location = location;
     }
 
     @Override

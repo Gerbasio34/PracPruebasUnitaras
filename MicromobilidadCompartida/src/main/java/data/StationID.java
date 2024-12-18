@@ -8,13 +8,12 @@ import java.util.Objects;
 final public class StationID {
 
     private final String id;
-    private final GeographicPoint location;
 
     public StationID() {
         throw new IllegalArgumentException("StationID cannot be null");
     }
 
-    public StationID(String id, GeographicPoint location) {
+    public StationID(String id) {
         if (id == null) {
             throw new IllegalArgumentException("StationID cannot be null");
         }
@@ -23,14 +22,9 @@ final public class StationID {
             throw new IllegalArgumentException("Invalid StationID format. Expected 'ST-12345-name'");
         }
         this.id = id;
-        this.location = location;
     }
 
     // Getters
-    public GeographicPoint getLocation() {
-        return location;
-    }
-
     public String getId() {
         return id;
     }
@@ -53,4 +47,3 @@ final public class StationID {
         return "StationID{" + "id='" + id + '\'' + '}';
     }
 }
-
