@@ -1,5 +1,8 @@
 package services.smartfeatures;
 
+import exception.PMVPhisicalException;
+import exception.ProceduralException;
+
 import java.net.ConnectException;
 
 public class ArduinoMicroControllerVMP implements ArduinoMicroController {
