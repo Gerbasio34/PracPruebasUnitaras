@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0220990-c2a2-4c52-8c77-de58fba3ada0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/services/Server.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/services/smartfeatures/ArduinoMicroController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/services/smartfeatures/QRDecoder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/services/smartfeatures/UnbondedBTSignal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data/StationID.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/StationID.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data/UserAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/UserAccount.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data/VehicleID.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/VehicleID.java" afterDir="false" />
-    </list>
+    <list default="true" id="d0220990-c2a2-4c52-8c77-de58fba3ada0" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
