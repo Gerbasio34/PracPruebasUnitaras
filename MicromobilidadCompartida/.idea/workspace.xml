@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d0220990-c2a2-4c52-8c77-de58fba3ada0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/exception/PMVPhisicalException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/exception/ProceduralException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/smartfeatures/ArduinoMicroController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/smartfeatures/ArduinoMicroController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/exception/CorruptedImgException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/smartfeatures/QRDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/smartfeatures/QRDecoder.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
