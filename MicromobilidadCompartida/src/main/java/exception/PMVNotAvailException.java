@@ -2,7 +2,7 @@ package exception;
 
 public class PMVNotAvailException extends Throwable {
 
-    private static final String DEFAULT_MESSAGE = "PMV no disponible en este momento.";
+    private static final String DEFAULT_MESSAGE = "PMV not available at this time.";
 
     public PMVNotAvailException() {
         super(DEFAULT_MESSAGE);

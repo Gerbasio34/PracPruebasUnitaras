@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d0220990-c2a2-4c52-8c77-de58fba3ada0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/exception/PMVNotAvailException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/exception/InvalidPairingArgsException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/exception/PairingNotFoundException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/exception/PMVNotAvailException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/exception/PMVNotAvailException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/services/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/services/Server.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +20,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
