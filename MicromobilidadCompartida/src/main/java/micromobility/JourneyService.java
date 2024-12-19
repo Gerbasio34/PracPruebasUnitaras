@@ -86,12 +86,6 @@ public class JourneyService {
         return inProgress;
     }
 
-    /**
-     * Finaliza el servicio de viaje, registrando la fecha, hora de fin y calculando los valores relacionados.
-     *
-     * @param endPoint   Punto final del viaje.
-     * @param distance   Distancia recorrida (en kilómetros).
-     */
     public void setServiceFinish(GeographicPoint endPoint, double distance) {
         if (!inProgress) {
             throw new IllegalStateException("El servicio no está en progreso.");
@@ -117,10 +111,6 @@ public class JourneyService {
         System.out.println("Servicio finalizado: " + endDate + " a las " + endHour);
     }
 
-    /**
-     * Calcula el importe total del viaje en función de la distancia y la duración.
-     * Ejemplo: $1 por kilómetro + $0.50 por minuto.
-     */
     private void calculateImport() {
         long durationInMinutes = this.duration.toMinutes();
         this.importCost = (distance * 1.0) + (durationInMinutes * 0.50); // Tarifa simple
