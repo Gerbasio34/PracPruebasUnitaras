@@ -11,7 +11,7 @@ final public class VehicleID {
         throw new IllegalArgumentException("VehicleID cannot be null");
     }
 
-    public VehicleID(String id, GeographicPoint location) {
+    public VehicleID(String id) {
         if (id == null) {
             throw new IllegalArgumentException("VehicleID cannot be null");
         }
