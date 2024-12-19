@@ -4,6 +4,7 @@ import data.GeographicPoint;
 import data.StationID;
 import data.UserAccount;
 import data.VehicleID;
+import exception.InvalidPairingArgsException;
 import exception.PMVNotAvailException;
 import exception.PairingNotFoundException;
 
