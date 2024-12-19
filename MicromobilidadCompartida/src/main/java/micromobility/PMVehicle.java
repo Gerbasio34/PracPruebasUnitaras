@@ -85,6 +85,10 @@ public class PMVehicle {
         this.state = PMVState.AVAILABLE;
     }
 
+    public void setTemporaryParking() {
+        this.state = PMVState.TEMPORARY_PARKING;
+    }
+
     // Setter method for location
     public void setLocation(GeographicPoint gP) {
         if (gP == null) new NullPointerException("Location must be defined cannot be null");
