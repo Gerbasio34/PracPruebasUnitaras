@@ -7,6 +7,7 @@ import data.VehicleID;
 import exception.InvalidPairingArgsException;
 import exception.PMVNotAvailException;
 import exception.PairingNotFoundException;
+import micromobility.JourneyService;
 
 import java.math.BigDecimal;
 import java.net.ConnectException;
@@ -28,7 +29,7 @@ public interface Server { // External service for the persistent storage
                         throws InvalidPairingArgsException, ConnectException;
 
     // Internal operations
-    void setPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date)
+    void setPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date);
     void unPairRegisterService(JourneyService s)
             throws PairingNotFoundException;
     void registerLocation(VehicleID veh, StationID st);
