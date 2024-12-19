@@ -2,29 +2,50 @@ package micromobility;
 
 import data.GeographicPoint;
 import data.VehicleID;
+import data.sensors.*;
+
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class PMVehicle {
     //class Members
-    private String id;
+    private final VehicleID id;
     private PMVState state;
     private GeographicPoint location;
-    private String sensorsData; // Sensor data as a string
+    final ArrayList<SensorData> sensorsData;
     private double chargeLevel; // Battery charge level as a percentage (0.0 to 100.0)
     private BufferedImage QRCode; // QR code image for the vehicle
 
+    public PMVehicle() {
+        throw new IllegalArgumentException("ID cannot be null");
+    }
     // Constructor
-    public PMVehicle(String id, PMVState initialState, GeographicPoint initialLocation, String sensorsData, double chargeLevel, BufferedImage QRCode) {
-        this.id = id;
+    public PMVehicle(String id, PMVState initialState, GeographicPoint initialLocation, double chargeLevel, BufferedImage QRCode) {
+        this.id = new VehicleID(id);
+        this.state = initialState;
+        this.location = initialLocation;
+        this.chargeLevel = chargeLevel;
+        this.QRCode = QRCode;
+
+        this.sensorsData = new ArrayList<SensorData>();
+        sensorsData.add(new SensorLight(false));
+        sensorsData.add(new SensorTemperature(20));
+        sensorsData.add(new SensorBreak(true));
+        sensorsData.add(new SensorSpeed(0));
+    }
+
+    public PMVehicle(String id, PMVState initialState, GeographicPoint initialLocation, double chargeLevel, BufferedImage QRCode, ArrayList<SensorData> sensorsData) {
+        this.id = new VehicleID(id);
         this.state = initialState;
         this.location = initialLocation;
         this.sensorsData = sensorsData;
         this.chargeLevel = chargeLevel;
         this.QRCode = QRCode;
     }
+
     // Getter methods
     public String getId() {
-        return id;
+        return id.toString();
     }
 
     public PMVState getState() {
@@ -33,6 +54,22 @@ public class PMVehicle {
 
     public GeographicPoint getLocation() {
         return location;
+    }
+
+    public BufferedImage getQRCode() {
+        return QRCode;
+    }
+
+    public double getChargeLevel() {
+        return chargeLevel;
+    }
+
+    public String getSensorsData() {
+        String results = "";
+        for (SensorData sensorData : this.sensorsData) {
+            results += String.format("%s: %s\n", sensorData.getSensorType(), sensorData.getSensorData());
+        }
+        return results;
     }
 
     // Setter methods for state transitions
@@ -50,12 +87,8 @@ public class PMVehicle {
 
     // Setter method for location
     public void setLocation(GeographicPoint gP) {
-        if (gP != null) {
-            this.location = gP;
-        }
-    }
-    public void setSensorsData(String sensorsData) {
-        this.sensorsData = sensorsData;
+        if (gP == null) new NullPointerException("Location must be defined cannot be null");
+        this.location = gP;
     }
 
     public void setChargeLevel(double chargeLevel) {
