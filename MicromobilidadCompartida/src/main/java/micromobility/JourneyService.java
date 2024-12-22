@@ -86,6 +86,17 @@ public class JourneyService {
         return inProgress;
     }
 
+    // Method to initialize the service
+    public void setServiceInit() {
+        if (inProgress) {
+            throw new IllegalStateException("The service is already in progress.");
+        }
+        this.initDate = LocalDate.now();
+        this.initHour = LocalTime.now();
+        this.inProgress = true; // Mark the service as in progress
+        System.out.println("Service started: " + initDate + " at " + initHour);
+    }
+
     public void setServiceFinish(GeographicPoint endPoint, double distance) {
         if (!inProgress) {
             throw new IllegalStateException("The service is not in progress.");
