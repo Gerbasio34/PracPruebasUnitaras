@@ -1,7 +1,4 @@
 package data;
-/**
- * Essential data classes
- */
 final public class GeographicPoint {
     // The geographical coordinates expressed as decimal degrees
     private final float latitude;

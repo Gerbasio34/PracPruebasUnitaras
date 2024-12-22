@@ -2,9 +2,6 @@ package data;
 
 import java.util.Objects;
 
-/**
- * Essential data classes
- */
 final public class VehicleID {
     private final String id;
     public VehicleID () {

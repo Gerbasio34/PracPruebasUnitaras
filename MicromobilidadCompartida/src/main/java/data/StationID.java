@@ -2,9 +2,6 @@ package data;
 
 import java.util.Objects;
 
-/**
- * Essential data classes
- */
 final public class StationID {
 
     private final String id;
