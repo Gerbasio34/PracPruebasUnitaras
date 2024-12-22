@@ -7,51 +7,46 @@ import java.net.ConnectException;
 public class ArduinoMicroControllerVMP implements ArduinoMicroController {
 
     // Simulate Bluetooth connection state and vehicle usage status
-    private boolean btConnected = false;
+    private boolean isBtConnected = false;
     private boolean isVehicleInUse = false;
-    private boolean driverIntoVehicle = false;
-    private boolean vehicleHandled = false;
-    private boolean technicalFailure = false;
+    private boolean isVehicleBeingDriven = false;
+    private boolean isTechnicalFailure = false;
     private boolean isBraking = false;
 
-    public void setDriverIntoVehicle(boolean driverIntoVehicle) {
-        this.driverIntoVehicle = driverIntoVehicle;
+    public ArduinoMicroControllerVMP(){}
+
+    public void setIsVehicleBeingDriven(boolean isVehicleBeingDriven) {
+        this.isVehicleBeingDriven = isVehicleBeingDriven;
     }
 
-    public void setVehicleHandled(boolean vehicleHandled) {
-        this.vehicleHandled = vehicleHandled;
+    public void setIsTechnicalFailure(boolean isTechnicalFailure) {
+        this.isTechnicalFailure = isTechnicalFailure;
     }
 
-    public void setTechnicalFailure(boolean technicalFailure) {
-        this.technicalFailure = technicalFailure;
-    }
-
-    public void setBraking(boolean isBraking) {
+    public void setIsBraking(boolean isBraking) {
         this.isBraking = isBraking;
     }
 
     @Override
     public void setBTconnection() throws ConnectException {
         // Simulate the process of establishing a Bluetooth connection
-        if (btConnected) {
+        if (isBtConnected) {
             throw new ConnectException("Bluetooth connection is already established.");
         }
-        System.out.println("Establishing Bluetooth connection with the vehicle...");
-        btConnected = true;
-        System.out.println("Bluetooth connection established successfully.");
+        isBtConnected = true;
     }
 
     @Override
     public void startDriving() throws PMVPhisicalException, ConnectException, ProceduralException {
         // Detects driver has entered the vehicle and is handling it to start a journey.
-        if (driverIntoVehicle && vehicleHandled) {
+        if (isVehicleBeingDriven) {
             // Validate if Bluetooth connection is established
-            if (!btConnected) {
+            if (!isBtConnected) {
                 throw new ConnectException("Bluetooth connection is not established.");
             }
 
             // Simulate a technical failure in the vehicle (e.g., if the motor does not respond)
-            if (technicalFailure) {
+            if (isTechnicalFailure) {
                 throw new PMVPhisicalException("Technical issue with the vehicle, cannot start the ride.");
             }
 
@@ -62,7 +57,6 @@ public class ArduinoMicroControllerVMP implements ArduinoMicroController {
 
             // Start the ride
             isVehicleInUse = true;
-            System.out.println("Ride started, the vehicle is in motion.");
         }
     }
 
@@ -71,12 +65,12 @@ public class ArduinoMicroControllerVMP implements ArduinoMicroController {
         // Detects driver is braking until the vehicle comes to a stop.
         if (isBraking) {
             // Validate if Bluetooth connection is established
-            if (!btConnected) {
+            if (!isBtConnected) {
                 throw new ConnectException("Bluetooth connection is not established.");
             }
 
             // Simulate a failure related to the brakes
-            if (technicalFailure) {
+            if (isTechnicalFailure) {
                 throw new PMVPhisicalException("Technical issue with the brakes, cannot stop the vehicle.");
             }
 
@@ -94,12 +88,12 @@ public class ArduinoMicroControllerVMP implements ArduinoMicroController {
     @Override
     public void undoBTconnection() {
         // Undo the Bluetooth connection
-        if (!btConnected) {
-            System.out.println("No active Bluetooth connection.");
-        } else {
-            System.out.println("Disconnecting Bluetooth...");
-            btConnected = false;
-            System.out.println("Bluetooth connection disconnected successfully.");
+        if (isBtConnected) {
+            isBtConnected = false;
+            isVehicleInUse = false;
+            isVehicleBeingDriven = false;
+            isTechnicalFailure = false;
+            isBraking = false;
         }
     }
 }

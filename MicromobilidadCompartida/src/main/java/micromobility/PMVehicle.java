@@ -30,7 +30,7 @@ public class PMVehicle {
         this.sensorsData = new ArrayList<SensorData>();
         sensorsData.add(new SensorLight(false));
         sensorsData.add(new SensorTemperature(20));
-        sensorsData.add(new SensorBrake(true));
+        sensorsData.add(new SensorBrake(false));
         sensorsData.add(new SensorSpeed(0));
     }
 
