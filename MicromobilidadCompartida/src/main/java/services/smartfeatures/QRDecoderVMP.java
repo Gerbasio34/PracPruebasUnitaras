@@ -1,21 +1,24 @@
 package services.smartfeatures;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Result;
 import com.google.zxing.qrcode.QRCodeReader;
 import data.VehicleID;
 import exception.CorruptedImgException;
-import com.google.zxing.*;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
-
 import java.awt.image.BufferedImage;
 
-public class QRDecoder {
+public class QRDecoderVMP {
 
     public VehicleID getVehicleID(BufferedImage QRImg) throws CorruptedImgException {
         try {
             // Create a QRCodeReader to decode the QR code
             QRCodeReader reader = new QRCodeReader();
 
-            // Convert the BufferedImage to a format that ZXing can read
+            // Convert the BufferedImage to a BinaryBitmap object
             LuminanceSource source = new BufferedImageLuminanceSource(QRImg);
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
@@ -24,9 +27,8 @@ public class QRDecoder {
 
             // Extract the content of the QR (e.g., a vehicle ID)
             String vehicleIDStr = result.getText();
-
-            // Convert the QR content to a VehicleID (this will depend on how the ID is structured)
-            // Here we assume that vehicleIDStr is a valid vehicle ID
+            System.out.println(vehicleIDStr);
+            System.exit(0);
             return new VehicleID(vehicleIDStr);
 
         } catch (NotFoundException e) {
