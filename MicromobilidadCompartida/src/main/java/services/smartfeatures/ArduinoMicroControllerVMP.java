@@ -15,7 +15,6 @@ public class ArduinoMicroControllerVMP implements ArduinoMicroController {
     private boolean isBraking = false;
     private boolean isInMovement = false;
     private long timeBraking = 0;
-
     private final float TIME_TO_STOP = 2; //seconds
 
     public ArduinoMicroControllerVMP(){}
