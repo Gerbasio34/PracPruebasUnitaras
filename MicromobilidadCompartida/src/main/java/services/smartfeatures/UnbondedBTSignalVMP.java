@@ -21,6 +21,10 @@ public class UnbondedBTSignalVMP implements UnbondedBTSignal {
     public void setStationID(StationID stationID) {
         this.stationID = stationID;
     }
+    //GETTERS
+    public StationID getStationID() {
+        return stationID;
+    }
 
     @Override
     public void BTbroadcast() throws ConnectException {

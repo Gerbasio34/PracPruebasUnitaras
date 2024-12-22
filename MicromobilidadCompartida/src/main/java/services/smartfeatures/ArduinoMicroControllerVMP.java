@@ -27,6 +27,26 @@ public class ArduinoMicroControllerVMP implements ArduinoMicroController {
         this.isBraking = isBraking;
     }
 
+    public boolean getIsBtConnected() {
+        return isBtConnected;
+    }
+
+    public boolean getIsVehicleInUse() {
+        return isVehicleInUse;
+    }
+
+    public boolean getIsVehicleBeingDriven() {
+        return isVehicleBeingDriven;
+    }
+
+    public boolean getIsTechnicalFailure() {
+        return isTechnicalFailure;
+    }
+
+    public boolean getIsBraking() {
+        return isBraking;
+    }
+
     @Override
     public void setBTconnection() throws ConnectException {
         // Simulate the process of establishing a Bluetooth connection
