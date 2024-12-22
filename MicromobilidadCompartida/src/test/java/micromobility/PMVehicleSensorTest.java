@@ -1,4 +1,5 @@
 package micromobility;
+import data.GeographicPoint;
 import data.sensors.*;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.*;
