@@ -27,8 +27,6 @@ public class QRDecoderVMP {
 
             // Extract the content of the QR (e.g., a vehicle ID)
             String vehicleIDStr = result.getText();
-            System.out.println(vehicleIDStr);
-            System.exit(0);
             return new VehicleID(vehicleIDStr);
 
         } catch (NotFoundException e) {

@@ -19,9 +19,8 @@ public class QRDecoderVMPTest {
     public void setUp() {
         // Initialize the QRDecoderVMP instance before each test
         qrDecoder = new QRDecoderVMP();
-
         // Load the QR code image
-        InputStream imageInputStream = QRDecoderVMP.class.getClassLoader().getResourceAsStream("qrcode-dummy.png");
+        InputStream imageInputStream = QRDecoderVMPTest.class.getClassLoader().getResourceAsStream("qrcode-dummy.png");
         try {
             // Load the QR image from the resources folder
             qrImage = ImageIO.read(imageInputStream);
@@ -30,24 +29,24 @@ public class QRDecoderVMPTest {
         }
     }
 
+    // Test1: Should decode a valid QR code and return the correct VehicleID
     @Test
-    public void testGetVehicleIDValidQRCode() throws Exception {
-        // Test1: Should decode a valid QR code and return the correct VehicleID
+    public void testGetVehicleIDValidQRCode() throws CorruptedImgException {
         VehicleID vehicleID = qrDecoder.getVehicleID(qrImage);
         assertNotNull(vehicleID);
-        assertEquals("12345", vehicleID.getId());
+        assertEquals("VH-123456-TestVehicle", vehicleID.getId());
     }
 
+    // Test2: Should throw CorruptedImgException when QR code is corrupted
     @Test
     public void testGetVehicleIDCorruptedQRCode() {
-        // Test2: Should throw CorruptedImgException when QR code is corrupted
         BufferedImage corruptedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB); // Simulating a corrupted QR image
         assertThrows(CorruptedImgException.class, () -> qrDecoder.getVehicleID(corruptedImage));
     }
 
+    // Test3: Should throw CorruptedImgException when no QR code is found
     @Test
     public void testGetVehicleIDNoQRCode() {
-        // Test3: Should throw CorruptedImgException when no QR code is found
         BufferedImage noQRCodeImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB); // No QR code in this image
         assertThrows(CorruptedImgException.class, () -> qrDecoder.getVehicleID(noQRCodeImage));
     }
