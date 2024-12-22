@@ -17,20 +17,18 @@ public class UnbondedBTSignalVMPTest {
     @BeforeEach
     public void setUp() {
         // Setup before each test: create the necessary objects
-        handler = new JourneyRealizeHandler();  // Real handler
-        stationID = new StationID("Station123");  // Assuming StationID constructor takes a string
+        handler = new JourneyRealizeHandler();
+        stationID = new StationID("ST-12345-Lleida");
         unbondedBTSignal = new UnbondedBTSignalVMP(handler, stationID);
     }
 
     // Test1: Verify that BT broadcast sends the station ID correctly
     @Test
     public void testBTbroadcastSendsStationID() {
-        // We simulate the broadcast process here
         try {
-            // Normally, we would verify the output of handler.broadcastStationID() in real scenarios.
-            // Since the function is void and prints internally, we can't directly check the result,
-            // but we can assert that no exceptions are thrown, meaning the process ran correctly.
+            unbondedBTSignal.setStationID(stationID);
             unbondedBTSignal.BTbroadcast();
+            assertEquals(unbondedBTSignal.getStationID(),handler.getStID());
         } catch (ConnectException e) {
             fail("ConnectException should not be thrown during broadcasting: " + e.getMessage());
         }
@@ -59,7 +57,7 @@ public class UnbondedBTSignalVMPTest {
     @Test
     public void testSetStationID() {
         // Verify that the setter updates the stationID correctly
-        StationID newStationID = new StationID("Station456");
+        StationID newStationID = new StationID("ST-12345-Barcelona");
         unbondedBTSignal.setStationID(newStationID);
 
         // Assert that the station ID has been updated
@@ -79,7 +77,7 @@ public class UnbondedBTSignalVMPTest {
         long elapsedTime = System.currentTimeMillis() - startTime;
 
         // Assert that the broadcast occurs after the interval
-        assertTrue(elapsedTime >= 3000, "The broadcast interval should be at least 3000 milliseconds.");
+        assertTrue(elapsedTime >= 1000, "The broadcast interval should be at least 1000 milliseconds.");
     }
 
     // Test5: Verify that the broadcast is interrupted correctly

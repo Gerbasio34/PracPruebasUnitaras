@@ -10,7 +10,7 @@ public class UnbondedBTSignalVMP implements UnbondedBTSignal {
     private JourneyRealizeHandler handler;
 
     private StationID stationID;
-    private static final int BROADCAST_INTERVAL = 3000;
+    private static final int BROADCAST_INTERVAL = 1000;
 
     public UnbondedBTSignalVMP(JourneyRealizeHandler handler, StationID stationID) {
         this.handler = handler;
@@ -35,9 +35,8 @@ public class UnbondedBTSignalVMP implements UnbondedBTSignal {
                 handler.broadcastStationID(this.stationID);
                 // Wait for the next broadcast (simulate the interval)
                 Thread.sleep(BROADCAST_INTERVAL);
-
+                break; // in real scenarios this break will not exists and this must be a parallel thread
             } catch (InterruptedException e) {
-                System.out.println("Broadcast interrupted.");
                 break;
             }
         }

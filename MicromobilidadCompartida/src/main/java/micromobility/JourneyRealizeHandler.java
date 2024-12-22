@@ -18,6 +18,12 @@ public class JourneyRealizeHandler {
         // Object initialization
     }
 
+    //GETTERS
+
+    public StationID getStID() {
+        return stID;
+    }
+
     // User interface input events
     public void scanQR()
             throws ConnectException, InvalidPairingArgsException,
