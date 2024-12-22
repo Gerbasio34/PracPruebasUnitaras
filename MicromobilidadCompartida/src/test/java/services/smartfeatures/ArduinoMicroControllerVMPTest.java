@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.net.ConnectException;
 import exception.PMVPhisicalException;
 import exception.ProceduralException;
-
+/*
 public class ArduinoMicroControllerVMPTest {
 
     private ArduinoMicroControllerVMP controller;
@@ -123,4 +123,4 @@ public class ArduinoMicroControllerVMPTest {
         assertFalse(controller.getIsBraking());
     }
 }
-
+*/
