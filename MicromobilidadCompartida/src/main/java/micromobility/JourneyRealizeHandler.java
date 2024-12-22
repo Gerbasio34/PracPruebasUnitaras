@@ -33,17 +33,6 @@ public class JourneyRealizeHandler {
 
     // Input events from the unbonded Bluetooth channel
     public void broadcastStationID(StationID stID) throws ConnectException {
-        if (stID == null) {
-            throw new ConnectException("No se recibió ningún ID de estación. Verifique la conexión Bluetooth.");
-        }
-
-        try {
-            // Simula la recepción del ID desde el canal Bluetooth
-            System.out.println("ID de estación recibido: " + stID.getId());
-            // Aquí podrías almacenar el ID para su uso posterior
-        } catch (Exception e) {
-            throw new ConnectException("Error al procesar el ID de la estación: " + e.getMessage());
-        }
     }
 
     // Input events from the Arduino microcontroller channel
