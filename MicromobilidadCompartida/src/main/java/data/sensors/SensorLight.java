@@ -11,7 +11,7 @@ public class SensorLight implements SensorData {
 
     @Override
     public String getSensorData() {
-        return "Current light is : " + (this.isLight ? "ON" : "OFF") + "km/h";
+        return "Current light is : " + (this.isLight ? "ON" : "OFF");
     }
 
     @Override

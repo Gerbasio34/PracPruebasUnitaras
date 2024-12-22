@@ -90,8 +90,8 @@ public class PMVehicle {
     }
 
     // Setter method for location
-    public void setLocation(GeographicPoint gP) {
-        if (gP == null) new NullPointerException("Location must be defined cannot be null");
+    public void setLocation(GeographicPoint gP) throws NullPointerException {
+        if (gP == null) throw new NullPointerException("Location must be defined cannot be null");
         this.location = gP;
     }
 

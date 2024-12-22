@@ -15,7 +15,7 @@ final public class VehicleID {
         if (id == null) {
             throw new IllegalArgumentException("VehicleID cannot be null");
         }
-        if (!id.matches("VH-\\d{6}-[a-zA-Z]{1,10}")) { // Ejemplo: formato "VH-123456"
+        if (!id.matches("VH-\\d{6}-[a-zA-Z]{1,30}")) { // Ejemplo: formato "VH-123456"
             throw new IllegalArgumentException("Invalid VehicleID format. Expected 'VH-123456-name'");
         }
         this.id = id;

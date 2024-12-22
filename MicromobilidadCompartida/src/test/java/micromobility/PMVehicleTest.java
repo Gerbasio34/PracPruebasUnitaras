@@ -7,6 +7,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
 
 
 class PMVehicleTest {
@@ -17,10 +21,17 @@ class PMVehicleTest {
 
     // Set up before each test
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         // Initialize objects required for the tests
         location = new GeographicPoint(40.4168f, -3.7038f); // Madrid coordinates
-        QRCode = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB); // Dummy QR code
+        // Load QR
+        InputStream imageInputStream = PMVehicleTest.class.getClassLoader().getResourceAsStream("qrcode-dummy.png");
+        if (imageInputStream != null) {
+            QRCode = ImageIO.read(imageInputStream);
+        }
+        if (QRCode == null) {
+            QRCode = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB); // Dummy QR code
+        }
         vehicle = new PMVehicle("VH-123456-TestVehicle", PMVState.AVAILABLE, location, 80.0, QRCode);
     }
 
@@ -28,7 +39,7 @@ class PMVehicleTest {
     @Test
     void testVehicleCreation() {
         // Check if the PMVehicle object is correctly initialized
-        assertEquals("VH-123456-TestVehicle", vehicle.getId());
+        assertEquals("VehicleID{id='VH-123456-TestVehicle'}", vehicle.getId());
         assertEquals(PMVState.AVAILABLE, vehicle.getState());
         assertEquals(location, vehicle.getLocation());
         assertEquals(80.0, vehicle.getChargeLevel());
@@ -83,7 +94,12 @@ class PMVehicleTest {
     // Test7: Verify that the vehicle's sensors data is formatted correctly
     @Test
     void testGetSensorsData() {
-        String expectedData = "SensorLight: false\nSensorTemperature: 20\nSensorBreak: true\nSensorSpeed: 0\n";
+        String expectedData = """
+        Sensor type: Light Sensor: Current light is : OFF
+        Sensor type: Temperature Sensor: Current temperature: 20.0°C
+        Sensor type: Light Sensor: Current break is : ON
+        Sensor type: Speed Sensor: Current speed: 0.0km/h
+        """;
         assertEquals(expectedData, vehicle.getSensorsData()); // Check if sensors data is returned correctly
     }
 

@@ -11,7 +11,7 @@ public class SensorBreak implements SensorData {
 
     @Override
     public String getSensorData() {
-        return "Current break is : " + (this.isBreaking ? "ON" : "OFF") + "km/h";
+        return "Current break is : " + (this.isBreaking ? "ON" : "OFF");
     }
 
     @Override
