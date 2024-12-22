@@ -2,6 +2,8 @@ package micromobility;
 import data.GeographicPoint;
 import data.sensors.*;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 
@@ -27,7 +29,7 @@ class PMVehicleSensorTest {
         mockSensors.add(mockSensor2);
 
         // Crear un PMVehicle con los mocks
-        PMVehicle vehicle = new PMVehicle("ID123", PMVState.AVAILABLE, new GeographicPoint(0, 0), 50.0, null, mockSensors);
+        PMVehicle vehicle = new PMVehicle("VH-123456-Auto", PMVState.AVAILABLE, new GeographicPoint(0, 0), 50.0, null, mockSensors);
 
         // Probar el método getSensorsData
         String result = vehicle.getSensorsData();
