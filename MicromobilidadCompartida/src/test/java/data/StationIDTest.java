@@ -12,20 +12,20 @@ class StationIDTest {
     // Set up before each test
     @BeforeEach
     void setUp() {
-        validStationID = new StationID("ST-12345-MainStation"); // Common valid StationID for reuse
+        validStationID = new StationID("ST-12345-Lleida"); // Common valid StationID for reuse
     }
 
     // Test1: Verify creation of a valid StationID
     @Test
     void testValidStationIDCreation() {
-        assertEquals("ST-12345-MainStation", validStationID.getId()); // Verify the ID is set correctly
+        assertEquals("ST-12345-Lleida", validStationID.getId()); // Verify the ID is set correctly
     }
 
     // Test2: Verify exception when StationID format is invalid (missing "ST-" prefix)
     @Test
     void testStationIDWithInvalidFormat() {
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> new StationID("12345-MainStation")); // Missing "ST-"
+                () -> new StationID("12345-Lleida")); // Missing "ST-"
 
         // Verify the exception message
         assertEquals("Invalid StationID format. Expected 'ST-12345-name'", exception.getMessage());
@@ -63,7 +63,7 @@ class StationIDTest {
     // Test6: Verify that two StationID objects with the same ID are equal
     @Test
     void testEqualsForSameID() {
-        StationID anotherStationID = new StationID("ST-12345-MainStation");
+        StationID anotherStationID = new StationID("ST-12345-Lleida");
         assertEquals(validStationID, anotherStationID); // Verify they are equal
     }
 
@@ -77,7 +77,7 @@ class StationIDTest {
     // Test8: Verify that two StationID objects with the same ID have the same hash code
     @Test
     void testHashCodeForSameID() {
-        StationID anotherStationID = new StationID("ST-12345-MainStation");
+        StationID anotherStationID = new StationID("ST-12345-Lleida");
         assertEquals(validStationID.hashCode(), anotherStationID.hashCode()); // Verify same hashCode
     }
 
@@ -91,7 +91,7 @@ class StationIDTest {
     // Test10: Verify the correct string representation of a StationID object
     @Test
     void testToString() {
-        String expected = "StationID{id='ST-12345-MainStation'}";
+        String expected = "StationID{id='ST-12345-Lleida'}";
         assertEquals(expected, validStationID.toString()); // Verify the toString representation
     }
 }

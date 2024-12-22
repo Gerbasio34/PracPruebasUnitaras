@@ -18,11 +18,12 @@ final public class StationID {
             throw new IllegalArgumentException("StationID cannot be null");
         }
         //Regex -> https://regex101.com/
-        if (!id.matches("ST-\\d{5}-[a-zA-Z]{1,10}")) {
+        if (!id.matches("ST-\\d{5}-[a-zA-Z]{1,30}")) {
             throw new IllegalArgumentException("Invalid StationID format. Expected 'ST-12345-name'");
         }
         this.id = id;
     }
+
 
     // Getters
     public String getId() {

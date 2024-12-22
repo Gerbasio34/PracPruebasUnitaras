@@ -55,7 +55,7 @@ class UserAccountTest {
     @Test
     void testUserAccountRegexValidation() {
         assertDoesNotThrow(() -> new UserAccount("UA-john-1"));       // Valid
-        assertDoesNotThrow(() -> new UserAccount("UA-user123-54321")); // Valid
+        assertDoesNotThrow(() -> new UserAccount("UA-user-54321")); // Valid
         assertThrows(IllegalArgumentException.class, () -> new UserAccount("UA-username-123456")); // Numbers > 5
         assertThrows(IllegalArgumentException.class, () -> new UserAccount("UA-username123-123")); // Alphanumeric username
         assertThrows(IllegalArgumentException.class, () -> new UserAccount("UA-username-"));       // Missing numbers
