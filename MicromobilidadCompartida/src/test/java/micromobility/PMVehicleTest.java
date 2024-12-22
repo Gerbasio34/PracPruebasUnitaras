@@ -97,7 +97,7 @@ class PMVehicleTest {
         String expectedData = """
         Sensor type: Light Sensor: Current light is : OFF
         Sensor type: Temperature Sensor: Current temperature: 20.0°C
-        Sensor type: Light Sensor: Current break is : ON
+        Sensor type: Light Sensor: Current brake is : ON
         Sensor type: Speed Sensor: Current speed: 0.0km/h
         """;
         assertEquals(expectedData, vehicle.getSensorsData()); // Check if sensors data is returned correctly
