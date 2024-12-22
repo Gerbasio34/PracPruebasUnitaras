@@ -8,20 +8,20 @@ import exception.InvalidPairingArgsException;
 import exception.PMVNotAvailException;
 import exception.PairingNotFoundException;
 import micromobility.JourneyService;
+import micromobility.PMVehicle;
+import micromobility.PMVState;
 
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServerMC implements Server {
 
     // Simulation of a database using HashMaps
-    private Map<VehicleID, Boolean> vehicleAvailability = new HashMap<>(); // true if available, false if not
+    private Map<VehicleID, PMVehicle> vehicleAvailability = new HashMap<>(); // true if available, false if not
     private Map<VehicleID, StationID> vehicleStationMap = new HashMap<>(); // Vehicle to station mapping
     private Map<VehicleID, UserAccount> vehicleUserMap = new HashMap<>(); // Matched vehicle to user mapping
 
@@ -32,12 +32,12 @@ public class ServerMC implements Server {
         }
 
         // Verify if the vehicle is available
-        Boolean isAvailable = vehicleAvailability.get(vhID);
-        if (isAvailable == null) {
+        PMVehicle vehicle = vehicleAvailability.get(vhID);
+        if (vehicle == null) {
             throw new ConnectException("VehicleID not found in the system.");
         }
 
-        if (!isAvailable) {
+        if (vehicle.getState() != PMVState.AVAILABLE) {
             throw new PMVNotAvailException("Vehicle is already paired with another user.");
         }
     }
@@ -49,20 +49,19 @@ public class ServerMC implements Server {
         }
 
         // Verify that the vehicle is available
-        Boolean isAvailable = vehicleAvailability.get(veh);
-        if (isAvailable == null || !isAvailable) {
-            throw new InvalidPairingArgsException("Vehicle is not available or does not exist.");
+        PMVehicle vehicle = vehicleAvailability.get(veh);
+        if (vehicle == null) {
+            throw new ConnectException("Vehicle is not available or does not exist.");
         }
 
         // Verify that the vehicle is at the specified station
         StationID currentStation = vehicleStationMap.get(veh);
         if (currentStation == null || !currentStation.equals(st)) {
-            throw new InvalidPairingArgsException("Vehicle is not at the specified station.");
+            throw new ConnectException("Vehicle is not at the specified station.");
         }
 
-        // Register the pairing
-        vehicleAvailability.put(veh, false); // Mark vehicle as unavailable
-        vehicleUserMap.put(veh, user); // Assign user to the vehicle
+
+        setPairing(user, veh, st, loc, date);
     }
 
     @Override
@@ -71,24 +70,27 @@ public class ServerMC implements Server {
             throw new InvalidPairingArgsException("One or more arguments are null.");
         }
 
+        PMVehicle vehicle = vehicleAvailability.get(veh);
+
         // Verify that the vehicle was paired with the user
         UserAccount pairedUser = vehicleUserMap.get(veh);
         if (pairedUser == null || !pairedUser.equals(user)) {
-            throw new InvalidPairingArgsException("Vehicle is not paired with the specified user.");
+            throw new ConnectException("Vehicle is not paired with the specified user.");
         }
 
         // Register the service completion (persistent record simulation)
         System.out.println("Service completed: " + user + " - " + veh + " - " + st + " - " + loc + " - " + date + " - " + avSp + " - " + dist + " - " + dur + " - " + imp);
 
         // Mark the vehicle as available and remove the pairing
-        vehicleAvailability.put(veh, true);
+        vehicle.setAvailb();
         vehicleUserMap.remove(veh);
-        vehicleStationMap.put(veh, st); // Update the vehicle's current station
+        registerLocation(veh, st);
     }
 
     @Override
     public void setPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date) {
-        vehicleAvailability.put(veh, false); // Mark vehicle as unavailable
+        PMVehicle vehicle = vehicleAvailability.get(veh);
+        vehicle.setNotAvailb();
         vehicleUserMap.put(veh, user); // Assign user to the vehicle
         vehicleStationMap.put(veh, st); // Update the vehicle's station
     }
