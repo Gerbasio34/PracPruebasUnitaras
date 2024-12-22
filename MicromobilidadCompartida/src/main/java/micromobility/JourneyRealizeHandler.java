@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class JourneyRealizeHandler {
 
     // Class members
+    StationID stID;
 
     // Constructors
     public JourneyRealizeHandler() {
@@ -33,6 +34,10 @@ public class JourneyRealizeHandler {
 
     // Input events from the unbonded Bluetooth channel
     public void broadcastStationID(StationID stID) throws ConnectException {
+        if (stID == null) {
+            throw new ConnectException("Null Station ID received.");
+        }
+        this.stID = stID;
     }
 
     // Input events from the Arduino microcontroller channel
