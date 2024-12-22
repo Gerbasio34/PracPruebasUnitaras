@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 
+// NO USAR Mockito TENEMOS QUE CREARLO NOSOTROS
 
 class PMVehicleSensorTest {
 
