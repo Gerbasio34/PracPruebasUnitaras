@@ -14,7 +14,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.ConnectException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 // Class that handles events and operations related to journey realization.
@@ -41,6 +43,7 @@ public class JourneyRealizeHandler {
         this.vehicle = vehicle;
 
     }
+
     // Setter methods for injecting dependences
     public void setServer(ServerMC server) {
         this.server = server;
@@ -93,7 +96,6 @@ public class JourneyRealizeHandler {
 
         //try to register the pairing of the user with the vehicle
         server.registerPairing(user, vehicleID, stID, gp, date);
-
     }
 
     public void unPairVehicle()
@@ -137,11 +139,42 @@ public class JourneyRealizeHandler {
 
     // Internal operations
     private void calculateValues(GeographicPoint gP, LocalDateTime date) {
-        // Implementation
+        localJourneyService.setDuration((int) Duration.between(localJourneyService.getInitHour(), date.toLocalTime()).toMinutes());
+
+        GeographicPoint originPoint = localJourneyService.getOriginPoint();
+
+        // Calculate distance between origin and destination
+        localJourneyService.setDistance(originPoint.calculateDistance(gP));
+
+        // Calculate average speed
+        long durationInMinutes = localJourneyService.getDuration();
+        if (durationInMinutes > 0) {
+            localJourneyService.setAvgSpeed((localJourneyService.getDistance() / durationInMinutes) * 60);
+        } else {
+            localJourneyService.setAvgSpeed(0.0);
+        }
     }
 
     private void calculateImport(float dis, int dur, float avSp, LocalDateTime date) {
-        // Implementation
-    }
+        BigDecimal ratePerKm = new BigDecimal("1.5"); // Rate per kilometer
+        BigDecimal ratePerMinute = new BigDecimal("0.5"); // Rate per minute
+        float speedPenaltyThreshold = 25.0f; // Average speed limit
+        BigDecimal speedPenaltyRate = new BigDecimal("0.2"); // 20% speed penalty
+        BigDecimal weekendSurcharge = new BigDecimal("0.15"); // 15% surcharge on weekends
 
+        boolean isWeekend = (date.getDayOfWeek().getValue() == 6 || date.getDayOfWeek().getValue() == 7);
+        BigDecimal baseImport = ratePerKm.multiply(BigDecimal.valueOf(dis)).add(ratePerMinute.multiply(BigDecimal.valueOf(dur)));
+
+        BigDecimal speedPenalty = BigDecimal.ZERO;
+        if (avSp > speedPenaltyThreshold) {
+            speedPenalty = baseImport.multiply(speedPenaltyRate);
+        }
+
+        BigDecimal surcharge = BigDecimal.ZERO;
+        if (isWeekend) {
+            surcharge = baseImport.multiply(weekendSurcharge);
+        }
+
+        localJourneyService.setImportCost(baseImport.add(speedPenalty).add(surcharge));
+    }
 }
