@@ -2,8 +2,18 @@ package micromobility;
 
 import data.GeographicPoint;
 import data.StationID;
+import data.UserAccount;
+import data.VehicleID;
 import exception.*;
+import services.Server;
+import services.ServerMC;
+import services.smartfeatures.ArduinoMicroControllerVMP;
+import services.smartfeatures.QRDecoderVMP;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 
@@ -11,7 +21,15 @@ import java.time.LocalDateTime;
 public class JourneyRealizeHandler {
 
     // Class members
-    StationID stID;
+    private StationID stID;
+    private QRDecoderVMP qrDecoder;
+    private BufferedImage qrImage;
+    private  ServerMC server;
+    private ArduinoMicroControllerVMP arduino;
+    private UserAccount user;
+    private GeographicPoint gp;
+    private VehicleID vehID;
+    private LocalDateTime date;
 
     // Constructors
     public JourneyRealizeHandler() {
@@ -24,12 +42,35 @@ public class JourneyRealizeHandler {
         return stID;
     }
 
+
+
     // User interface input events
     public void scanQR()
             throws ConnectException, InvalidPairingArgsException,
             CorruptedImgException, PMVNotAvailException,
             ProceduralException {
         // Implementation
+        // Initialize the QRDecoderVMP instance before each test
+        qrDecoder = new QRDecoderVMP();
+        // Load the QR code image
+        InputStream imageInputStream = QRDecoderVMP.class.getClassLoader().getResourceAsStream("qrcode-dummy.png");
+        try {
+            // Load the QR image from the resources folder
+            qrImage = ImageIO.read(imageInputStream);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load the QR code image", e);
+        }
+        //decode the QR to obtain the VehicleID
+        VehicleID vehicleID = qrDecoder.getVehicleID(qrImage);
+        //check if the vehicle is available
+        server.checkPMVAvail(vehicleID);
+
+        //conect BT connection
+        arduino.setBTconnection();
+
+        //try to register the pairing of the user with the vehicle
+        server.registerPairing(user,vehID, stID, gp, date);
+
     }
 
     public void unPairVehicle()
