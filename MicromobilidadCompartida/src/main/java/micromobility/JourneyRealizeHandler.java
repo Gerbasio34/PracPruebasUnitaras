@@ -83,6 +83,7 @@ public class JourneyRealizeHandler {
         //decode the QR to obtain the VehicleID
         VehicleID vehicleID = qrDecoder.getVehicleID(vehicle.getQRCode());
 
+        //setVehicleId
         vehicle.setId(vehicleID);
 
         //check if the vehicle is available
