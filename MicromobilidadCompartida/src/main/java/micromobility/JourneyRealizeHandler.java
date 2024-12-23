@@ -32,8 +32,11 @@ public class JourneyRealizeHandler {
     private LocalDateTime date;
 
     // Constructors
-    public JourneyRealizeHandler() {
+    public JourneyRealizeHandler(UserAccount user) {
         // Object initialization
+        server = new ServerMC();
+        arduino = new ArduinoMicroControllerVMP();
+        user = user;
     }
 
     //GETTERS
@@ -45,9 +48,7 @@ public class JourneyRealizeHandler {
 
 
     // User interface input events
-    public void scanQR()
-            throws ConnectException, InvalidPairingArgsException,
-            CorruptedImgException, PMVNotAvailException,
+    public void scanQR() throws ConnectException, InvalidPairingArgsException, CorruptedImgException, PMVNotAvailException,
             ProceduralException {
         // Implementation
         // Initialize the QRDecoderVMP instance before each test
@@ -55,13 +56,20 @@ public class JourneyRealizeHandler {
         // Load the QR code image
         InputStream imageInputStream = QRDecoderVMP.class.getClassLoader().getResourceAsStream("qrcode-dummy.png");
         try {
+            if (imageInputStream == null) {
+                throw new CorruptedImgException("QR Code image is missing or corrupted.");
+            }
             // Load the QR image from the resources folder
             qrImage = ImageIO.read(imageInputStream);
+            if (qrImage == null) {
+                throw new CorruptedImgException("Failed to read the QR Code image.");
+            }
         } catch (IOException e) {
             throw new RuntimeException("Failed to load the QR code image", e);
         }
         //decode the QR to obtain the VehicleID
         VehicleID vehicleID = qrDecoder.getVehicleID(qrImage);
+
         //check if the vehicle is available
         server.checkPMVAvail(vehicleID);
 

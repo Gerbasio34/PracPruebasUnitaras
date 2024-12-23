@@ -1,6 +1,8 @@
 package services.smartfeatures;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import data.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.net.ConnectException;
@@ -13,11 +15,13 @@ public class UnbondedBTSignalVMPTest {
     private UnbondedBTSignalVMP unbondedBTSignal;
     private JourneyRealizeHandler handler;
     private StationID stationID;
+    private UserAccount user;
 
     @BeforeEach
     public void setUp() {
         // Setup before each test: create the necessary objects
-        handler = new JourneyRealizeHandler();
+        user = new UserAccount("johnsmith-1234");
+        handler = new JourneyRealizeHandler(user);
         stationID = new StationID("ST-12345-Lleida");
         unbondedBTSignal = new UnbondedBTSignalVMP(handler, stationID);
     }
@@ -38,7 +42,7 @@ public class UnbondedBTSignalVMPTest {
     @Test
     public void testBTbroadcastThrowsConnectException() {
         // Simulate a connection error by setting the connection state to false manually
-        handler = new JourneyRealizeHandler() {
+        handler = new JourneyRealizeHandler(user) {
             @Override
             public void broadcastStationID(StationID stID) throws ConnectException {
                 throw new ConnectException("Connection failed");
