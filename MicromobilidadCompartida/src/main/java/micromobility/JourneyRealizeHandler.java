@@ -24,7 +24,7 @@ public class JourneyRealizeHandler {
     private StationID stID;
     private QRDecoderVMP qrDecoder;
     private BufferedImage qrImage;
-    private  ServerMC server;
+    private ServerMC server;
     private ArduinoMicroControllerVMP arduino;
     private UserAccount user;
     private GeographicPoint gp;
