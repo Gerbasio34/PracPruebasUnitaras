@@ -2,16 +2,16 @@ package data.sensors;
 
 public class SensorBrake implements SensorData {
 
-    private boolean isBraking;
+    private boolean braking;
     private final String sensorType = "Light Sensor";
 
-    public SensorBrake(boolean isBraking) {
-        this.isBraking = isBraking;
+    public SensorBrake(boolean braking) {
+        this.braking = braking;
     }
 
     @Override
     public String getSensorData() {
-        return "Current break is : " + (this.isBraking ? "ON" : "OFF");
+        return "Current break is : " + (this.braking ? "ON" : "OFF");
     }
 
     @Override
@@ -20,11 +20,11 @@ public class SensorBrake implements SensorData {
     }
 
     // Additional Methods
-    public boolean getIsBraking() {
-        return isBraking;
+    public boolean getBraking() {
+        return braking;
     }
 
-    public void setIsBraking(boolean isBraking) {
-        this.isBraking = isBraking;
+    public void setBraking(boolean braking) {
+        this.braking = braking;
     }
 }

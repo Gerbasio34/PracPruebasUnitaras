@@ -2,16 +2,16 @@ package data.sensors;
 
 public class SensorLight implements SensorData {
 
-    private boolean isLight;
+    private boolean light;
     private final String sensorType = "Light Sensor";
 
-    public SensorLight(boolean isLight) {
-        this.isLight = isLight;
+    public SensorLight(boolean light) {
+        this.light = light;
     }
 
     @Override
     public String getSensorData() {
-        return "Current light is : " + (this.isLight ? "ON" : "OFF");
+        return "Current light is : " + (this.light ? "ON" : "OFF");
     }
 
     @Override
@@ -20,11 +20,11 @@ public class SensorLight implements SensorData {
     }
 
     // Additional Methods
-    public boolean getIsLight() {
-        return isLight;
+    public boolean getLight() {
+        return light;
     }
 
-    public void setIsLight(boolean isLight) {
-        this.isLight = isLight;
+    public void setLight(boolean light) {
+        this.light = light;
     }
 }

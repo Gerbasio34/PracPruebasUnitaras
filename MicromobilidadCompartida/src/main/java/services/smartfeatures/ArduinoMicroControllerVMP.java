@@ -8,44 +8,44 @@ import java.net.ConnectException;
 public class ArduinoMicroControllerVMP implements ArduinoMicroController {
 
     // Simulate Bluetooth connection state and vehicle usage status
-    private boolean isBtConnected = false;
-    private boolean isVehicleInUse = false;
-    private boolean isVehicleBeingDriven = false;
-    private boolean isTechnicalFailure = false;
-    private boolean isBraking = false;
-    private boolean isInMovement = false;
+    private boolean btConnected = false;
+    private boolean vehicleInUse = false;
+    private boolean vehicleBeingDriven = false;
+    private boolean technicalFailure = false;
+    private boolean braking = false;
+    private boolean inMovement = false;
     private long timeBraking = 0;
     private final float TIME_TO_STOP = 2; //seconds
 
     public ArduinoMicroControllerVMP(){}
 
-    public void setIsVehicleBeingDriven(boolean isVehicleBeingDriven) throws ConnectException{
-        if (!isBtConnected) {
+    public void setVehicleBeingDriven(boolean isVehicleBeingDriven) throws ConnectException{
+        if (!btConnected) {
             throw new ConnectException("Bluetooth connection is not established.");
         }
-        this.isVehicleBeingDriven = isVehicleBeingDriven;
+        this.vehicleBeingDriven = isVehicleBeingDriven;
     }
-    public void setIsTechnicalFailure(boolean isTechnicalFailure) {
-        this.isTechnicalFailure = isTechnicalFailure;
+    public void setTechnicalFailure(boolean isTechnicalFailure) {
+        this.technicalFailure = isTechnicalFailure;
     }
     public void setVehicleInUse(boolean isVehicleInUse){
-        this.isVehicleInUse = isVehicleInUse;
+        this.vehicleInUse = isVehicleInUse;
     }
     private void checkInMovement(){
         if (timeBraking == 0) {
-            isInMovement = true;
+            inMovement = true;
             return;
         }
 
         long endTimer = System.currentTimeMillis();
         float timePassed = endTimer - timeBraking;
         if ((timePassed / 1000.0) >= TIME_TO_STOP) { //to seconds
-            isInMovement = false;
+            inMovement = false;
             timeBraking = 0;
         }
     }
-    public void setIsBraking(boolean isBraking) throws ConnectException{
-        if (!isBtConnected) {
+    public void setBraking(boolean isBraking) throws ConnectException{
+        if (!btConnected) {
             throw new ConnectException("Bluetooth connection is not established.");
         }
         if (isBraking) {
@@ -53,65 +53,65 @@ public class ArduinoMicroControllerVMP implements ArduinoMicroController {
         }
 
         checkInMovement();
-        this.isBraking = isBraking;
+        this.braking = isBraking;
     }
 
-    public boolean getIsBtConnected() {
-        return isBtConnected;
+    public boolean getBtConnected() {
+        return btConnected;
     }
 
-    public boolean getIsVehicleInUse() {
-        return isVehicleInUse;
+    public boolean getVehicleInUse() {
+        return vehicleInUse;
     }
 
-    public boolean getIsVehicleBeingDriven() {
-        return isVehicleBeingDriven;
+    public boolean getVehicleBeingDriven() {
+        return vehicleBeingDriven;
     }
 
-    public boolean getIsTechnicalFailure() {
-        return isTechnicalFailure;
+    public boolean getTechnicalFailure() {
+        return technicalFailure;
     }
 
-    public boolean getIsBraking() {
-        return isBraking;
+    public boolean getBraking() {
+        return braking;
     }
 
-    public boolean getIsInMovement() {
-        return isInMovement;
+    public boolean getInMovement() {
+        return inMovement;
     }
 
     @Override
     public void setBTconnection() throws ConnectException {
         // Simulate the process of establishing a Bluetooth connection
-        if (isBtConnected) {
+        if (btConnected) {
             throw new ConnectException("Bluetooth connection is already established.");
         }
 
-        isBtConnected = true;
+        btConnected = true;
     }
 
     @Override
     public void startDriving() throws PMVPhisicalException, ConnectException, ProceduralException {
         // Detects driver has entered the vehicle and is handling it to start a journey.
-        if (isVehicleBeingDriven) {
+        if (vehicleBeingDriven) {
             // Validate if Bluetooth connection is established
-            if (!isBtConnected) {
+            if (!btConnected) {
                 throw new ConnectException("Bluetooth connection is not established.");
             }
 
             // Simulate a technical failure in the vehicle (e.g., if the motor does not respond)
-            if (isTechnicalFailure) {
+            if (technicalFailure) {
                 throw new PMVPhisicalException("Technical issue with the vehicle, cannot start the ride.");
             }
 
             // Validate if the vehicle is already in use
-            if (isVehicleInUse) {
+            if (vehicleInUse) {
                 throw new ProceduralException("The vehicle is already in use.");
             }
 
             // Start the ride
-            isVehicleInUse = true;
-            isInMovement = true;
+            vehicleInUse = true;
+            inMovement = true;
         }
     }
 
@@ -120,36 +120,36 @@ public class ArduinoMicroControllerVMP implements ArduinoMicroController {
         checkInMovement();
 
         // Validate if Bluetooth connection is established
-        if (!isBtConnected) {
+        if (!btConnected) {
             throw new ConnectException("Bluetooth connection is not established.");
         }
         // Simulate a failure related to the brakes
-        if (isTechnicalFailure) {
+        if (technicalFailure) {
             throw new PMVPhisicalException("Technical issue with the brakes, cannot stop the vehicle.");
         }
         // Detects driver is braking until the vehicle comes to a stop.
-        if (isInMovement) {
+        if (inMovement) {
             throw new ProceduralException("The vehicle is moving, cannot stop right now.");
         }
         // Validate if the vehicle is being driven
-        if (!isVehicleBeingDriven) {
+        if (!vehicleBeingDriven) {
             throw new ProceduralException("The vehicle is not being driven.");
         }
 
         // Stop the ride
-        isVehicleInUse = false;
+        vehicleInUse = false;
     }
 
     @Override
     public void undoBTconnection() {
         // Undo the Bluetooth connection
-        if (isBtConnected) {
-            isBtConnected = false;
-            isVehicleInUse = false;
-            isVehicleBeingDriven = false;
-            isTechnicalFailure = false;
-            isBraking = false;
-            isInMovement = false;
+        if (btConnected) {
+            btConnected = false;
+            vehicleInUse = false;
+            vehicleBeingDriven = false;
+            technicalFailure = false;
+            braking = false;
+            inMovement = false;
             timeBraking = 0;
         }
     }
