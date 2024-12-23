@@ -23,11 +23,10 @@ public class PMVehicle_sensorsTest {
 
         // Create a PMVehicle instance with mock sensors
         PMVehicle vehicle = new PMVehicle(
-                "VH-123456-gerbasiou",
                 PMVState.AVAILABLE,
                 new GeographicPoint(40.7128f, -74.0060f), // Updated constructor with float values
                 75.0,
-                null,
+                "",
                 mockSensors
         );
 

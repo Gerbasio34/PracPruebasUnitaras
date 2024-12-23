@@ -39,7 +39,22 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test3: Should throw ConnectException if Bluetooth is not connected
+    // Test3: Should not throw any Exception it's a valid journey
+    public void testValidJourney() throws ConnectException, ProceduralException, InterruptedException, PMVPhisicalException {
+        controller.setBTconnection();  // Establish Bluetooth connection
+        controller.setVehicleBeingDriven(true);  // Vehicle is being driven
+        controller.startDriving();
+        controller.setBraking(true);  // Driver is braking
+        Thread.sleep(3000);
+        try {
+            controller.stopDriving();
+        } catch (Exception e) {
+            fail(String.format("Exception %s",e.getMessage()));
+        }
+    }
+
+    @Test
+    // Test4: Should throw ConnectException if Bluetooth is not connected
     public void testSetBeingDrivenNoConnection() {
         try {
             controller.setVehicleBeingDriven(true);
@@ -51,7 +66,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test4: Should throw ConnectException if Bluetooth is not connected
+    // Test5: Should throw ConnectException if Bluetooth is not connected
     public void testSetBrakingNoConnection() {
         try {
             controller.setBraking(true);  // Driver is braking
@@ -62,7 +77,7 @@ public class ArduinoMicroControllerVMPTest {
         }
     }
     @Test
-    // Test5: Should throw ProceduralException if the vehicle is already in use
+    // Test6: Should throw ProceduralException if the vehicle is already in use
     public void testStartDrivingWithVehicleInUse() throws ConnectException, PMVPhisicalException, ProceduralException {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setVehicleBeingDriven(true);  // Ready to start driving
@@ -77,7 +92,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test6: Should throw ConnectException if Bluetooth is not connected when stopping
+    // Test7: Should throw ConnectException if Bluetooth is not connected when stopping
     public void testStopDrivingNoConnection() throws ProceduralException, PMVPhisicalException{
         try {
             controller.stopDriving();
@@ -89,7 +104,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test7: Should throw ProceduralException if the vehicle is not being driven
+    // Test8: Should throw ProceduralException if the vehicle is not being driven
     public void testStopDrivingVehicleNotBeingDriven() throws ConnectException, PMVPhisicalException {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setBraking(true);  // Driver is braking
@@ -103,7 +118,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test8: Should throw PMVPhisicalException if there is a technical failure when stopping
+    // Test9: Should throw PMVPhisicalException if there is a technical failure when stopping
     public void testStopDrivingWithTechnicalFailure() throws ConnectException, ProceduralException, InterruptedException, PMVPhisicalException {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setVehicleBeingDriven(true);  // Vehicle is being driven
@@ -121,7 +136,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test9: Should throw ProceduralException if it's in movement
+    // Test10: Should throw ProceduralException if it's in movement
     public void testStopDrivingWhileMoving() throws ConnectException, ProceduralException, PMVPhisicalException {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setVehicleBeingDriven(true);  // Vehicle is being driven
@@ -138,7 +153,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test10: Should reset all states when undoing the Bluetooth connection
+    // Test11: Should reset all states when undoing the Bluetooth connection
     public void testUndoBTconnection() throws ConnectException {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setVehicleBeingDriven(true);  // Start vehicle usage

@@ -94,15 +94,6 @@ public class ServerMC implements Server {
         JourneyService journeyService = activeJourneyServices.get(serviceId);
         activeJourneyServices.remove(serviceId);
 
-        // Sets journey
-        journeyService.setEndPoint(loc);
-        journeyService.setEndDate(date.toLocalDate());
-        journeyService.setEndHour(date.toLocalTime());
-        journeyService.setAvgSpeed(avSp);
-        journeyService.setDistance(dist);
-        journeyService.setDuration(dur);
-        journeyService.setImportCost(imp);
-
         try {
             unPairRegisterService(journeyService);
         } catch (PairingNotFoundException e) {
@@ -112,15 +103,16 @@ public class ServerMC implements Server {
 
     @Override
     public void setPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date) {
-        PMVehicle vehicle = vehicleAvailability.get(veh);
+        PMVehicle vehicle = vehicleAvailability.computeIfAbsent(veh, k -> new PMVehicle(
+                PMVState.AVAILABLE, loc, 0.0
+        ));
+        vehicle.setId(veh);
         vehicle.setNotAvailb();
         vehicleUserMap.put(veh, user); // Assign user to the vehicle
         vehicleStationMap.put(veh, st); // Update the vehicle's station
 
         String serviceId = String.format("%s_%s_%s",user.getId(),veh,st); // same user with the same veh at the same station is unique
         JourneyService journeyService = new JourneyService(serviceId, loc);
-        journeyService.setInitDate(date.toLocalDate());
-        journeyService.setInitHour(date.toLocalTime());
         journeyService.setServiceInit();
         activeJourneyServices.put(serviceId,journeyService);
     }
@@ -130,8 +122,21 @@ public class ServerMC implements Server {
         if (s == null) {
             throw new PairingNotFoundException("Journey service is null.");
         }
+        if (activeJourneyServices.get(s.getServiceID()) == null) {
+            throw new PairingNotFoundException("Journey service is null.");
+        }
         // Simulation of service unregistration
-        s.setServiceFinish();
+        JourneyService journeyService = activeJourneyServices.get(s.getServiceID());
+        // Sets journey values
+        journeyService.setInitDate(s.getInitDate());
+        journeyService.setInitHour(s.getInitHour());
+        journeyService.setEndPoint(s.getEndPoint());
+        journeyService.setEndDate(s.getEndDate());
+        journeyService.setEndHour(s.getEndHour());
+        journeyService.setAvgSpeed(s.getAvgSpeed());
+        journeyService.setDistance(s.getDistance());
+        journeyService.setDuration(s.getDuration());
+        journeyService.setImportCost(s.getImportCost());
         recordsJourneyServices.add(s);
     }
 

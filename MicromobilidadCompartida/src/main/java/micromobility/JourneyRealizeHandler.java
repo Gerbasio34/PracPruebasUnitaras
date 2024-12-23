@@ -22,30 +22,52 @@ public class JourneyRealizeHandler {
 
     // Class members
     private StationID stID;
+    private UserAccount user;
+    private PMVehicle vehicle;
     private QRDecoderVMP qrDecoder;
-    private BufferedImage qrImage;
     private ServerMC server;
     private ArduinoMicroControllerVMP arduino;
-    private UserAccount user;
     private GeographicPoint gp;
-    private VehicleID vehID;
     private LocalDateTime date;
+    private JourneyService localJourneyService;
 
     // Constructors
-    public JourneyRealizeHandler(UserAccount user) {
+    public JourneyRealizeHandler(UserAccount user, GeographicPoint gp, PMVehicle vehicle) {
         // Object initialization
         server = new ServerMC();
         arduino = new ArduinoMicroControllerVMP();
-        user = user;
+        this.gp = gp;
+        this.user = user;
+        this.vehicle = vehicle;
+
+    }
+    // Setter methods for injecting dependences
+    public void setServer(ServerMC server) {
+        this.server = server;
+    }
+    public void setArduino(ArduinoMicroControllerVMP arduino) {
+        this.arduino = arduino;
+    }
+    public void setUser(UserAccount user) {
+        this.user = user;
+    }
+
+    public void setGp(GeographicPoint gp) {
+        this.gp = gp;
+    }
+
+    public void setVehicle(PMVehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public void setStID(StationID stID) {
+        this.stID = stID;
     }
 
     //GETTERS
-
     public StationID getStID() {
         return stID;
     }
-
-
 
     // User interface input events
     public void scanQR() throws ConnectException, InvalidPairingArgsException, CorruptedImgException, PMVNotAvailException,
@@ -53,31 +75,24 @@ public class JourneyRealizeHandler {
         // Implementation
         // Initialize the QRDecoderVMP instance before each test
         qrDecoder = new QRDecoderVMP();
-        // Load the QR code image
-        InputStream imageInputStream = QRDecoderVMP.class.getClassLoader().getResourceAsStream("qrcode-dummy.png");
-        try {
-            if (imageInputStream == null) {
-                throw new CorruptedImgException("QR Code image is missing or corrupted.");
-            }
-            // Load the QR image from the resources folder
-            qrImage = ImageIO.read(imageInputStream);
-            if (qrImage == null) {
-                throw new CorruptedImgException("Failed to read the QR Code image.");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load the QR code image", e);
-        }
+
         //decode the QR to obtain the VehicleID
-        VehicleID vehicleID = qrDecoder.getVehicleID(qrImage);
+        VehicleID vehicleID = qrDecoder.getVehicleID(vehicle.getQRCode());
 
         //check if the vehicle is available
         server.checkPMVAvail(vehicleID);
 
-        //conect BT connection
+        // Establish Bluetooth connection
         arduino.setBTconnection();
 
+        String serviceId = String.format("%s_%s_%s",user.getId(),vehicleID,stID); // same user with the same veh at the same station is unique
+        localJourneyService = new JourneyService(
+                serviceId,
+                this.gp
+        );
+
         //try to register the pairing of the user with the vehicle
-        server.registerPairing(user,vehID, stID, gp, date);
+        server.registerPairing(user, vehicleID, stID, gp, date);
 
     }
 
@@ -99,6 +114,20 @@ public class JourneyRealizeHandler {
     public void startDriving()
             throws ConnectException, ProceduralException {
         // Implementation
+
+        try {
+            arduino.startDriving();
+            arduino.setVehicleBeingDriven(true);  // Vehicle is being driven
+            arduino.setBraking(true);  // Driver is braking
+            Thread.sleep(3000); // Simulate driver using the brake at least 3 seconds
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (PMVPhisicalException e) {
+            throw new ProceduralException(e);
+        }
+
+        localJourneyService.setServiceInit();
+        vehicle.setUnderWay();
     }
 
     public void stopDriving()
@@ -114,7 +143,5 @@ public class JourneyRealizeHandler {
     private void calculateImport(float dis, int dur, float avSp, LocalDateTime date) {
         // Implementation
     }
-
-    // Setter methods for injecting dependences
 
 }

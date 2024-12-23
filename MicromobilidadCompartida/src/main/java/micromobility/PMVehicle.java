@@ -3,29 +3,33 @@ package micromobility;
 import data.GeographicPoint;
 import data.VehicleID;
 import data.sensors.*;
+import exception.CorruptedImgException;
+import services.smartfeatures.QRDecoderVMP;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class PMVehicle {
     //class Members
-    private final VehicleID id;
+    private VehicleID id;
     private PMVState state;
     private GeographicPoint location;
     final ArrayList<SensorData> sensorsData;
     private double chargeLevel; // Battery charge level as a percentage (0.0 to 100.0)
     private BufferedImage QRCode; // QR code image for the vehicle
+    private String QRPathFile;
 
     public PMVehicle() {
         throw new IllegalArgumentException("ID cannot be null");
     }
     // Constructor
-    public PMVehicle(String id, PMVState initialState, GeographicPoint initialLocation, double chargeLevel, BufferedImage QRCode) {
-        this.id = new VehicleID(id);
+    public PMVehicle(PMVState initialState, GeographicPoint initialLocation, double chargeLevel) {
         this.state = initialState;
         this.location = initialLocation;
         this.chargeLevel = chargeLevel;
-        this.QRCode = QRCode;
 
         this.sensorsData = new ArrayList<SensorData>();
         sensorsData.add(new SensorLight(false));
@@ -34,13 +38,11 @@ public class PMVehicle {
         sensorsData.add(new SensorSpeed(0));
     }
 
-    public PMVehicle(String id, PMVState initialState, GeographicPoint initialLocation, double chargeLevel, BufferedImage QRCode, ArrayList<SensorData> sensorsData) {
-        this.id = new VehicleID(id);
+    public PMVehicle(PMVState initialState, GeographicPoint initialLocation, double chargeLevel, ArrayList<SensorData> sensorsData) {
         this.state = initialState;
         this.location = initialLocation;
         this.sensorsData = sensorsData;
         this.chargeLevel = chargeLevel;
-        this.QRCode = QRCode;
     }
 
     // Getter methods
@@ -73,6 +75,25 @@ public class PMVehicle {
     }
 
     // Setter methods for state transitions
+
+    public void setId(VehicleID id) {
+        this.id = id;
+    }
+
+    public void setQRCode(String QRPathFile) {
+        InputStream imageInputStream = PMVehicle.class.getClassLoader().getResourceAsStream(QRPathFile);
+        if (imageInputStream != null) {
+            try {
+                this.QRCode = ImageIO.read(imageInputStream);
+            } catch (IOException e) {
+                QRCode = null;
+            }
+        }
+        if (this.QRCode == null) {
+            this.QRCode = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB); // Dummy QR code
+        }
+    }
+
     public void setNotAvailb() {
         this.state = PMVState.NOT_AVAILABLE;
     }

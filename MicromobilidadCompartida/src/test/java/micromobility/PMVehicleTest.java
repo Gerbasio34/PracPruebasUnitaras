@@ -25,14 +25,7 @@ class PMVehicleTest {
         // Initialize objects required for the tests
         location = new GeographicPoint(40.4168f, -3.7038f); // Madrid coordinates
         // Load QR
-        InputStream imageInputStream = PMVehicleTest.class.getClassLoader().getResourceAsStream("qrcode-dummy.png");
-        if (imageInputStream != null) {
-            QRCode = ImageIO.read(imageInputStream);
-        }
-        if (QRCode == null) {
-            QRCode = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB); // Dummy QR code
-        }
-        vehicle = new PMVehicle("VH-123456-TestVehicle", PMVState.AVAILABLE, location, 80.0, QRCode);
+        vehicle = new PMVehicle("VH-123456-TestVehicle", PMVState.AVAILABLE, location, 80.0, "qrcode-dummy.png");
     }
 
     // Test1: Verify that the PMVehicle is created successfully with valid parameters
@@ -97,7 +90,7 @@ class PMVehicleTest {
         String expectedData = """
         Sensor type: Light Sensor: Current light is : OFF
         Sensor type: Temperature Sensor: Current temperature: 20.0°C
-        Sensor type: Light Sensor: Current brake is : ON
+        Sensor type: Light Sensor: Current brake is : OFF
         Sensor type: Speed Sensor: Current speed: 0.0km/h
         """;
         assertEquals(expectedData, vehicle.getSensorsData()); // Check if sensors data is returned correctly

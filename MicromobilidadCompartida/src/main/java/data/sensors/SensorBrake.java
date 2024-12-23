@@ -11,7 +11,7 @@ public class SensorBrake implements SensorData {
 
     @Override
     public String getSensorData() {
-        return "Current break is : " + (this.braking ? "ON" : "OFF");
+        return "Current brake is : " + (this.braking ? "ON" : "OFF");
     }
 
     @Override
