@@ -15,15 +15,19 @@ import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServerMC implements Server {
 
     // Simulation of a database using HashMaps
-    private Map<VehicleID, PMVehicle> vehicleAvailability = new HashMap<>(); // true if available, false if not
-    private Map<VehicleID, StationID> vehicleStationMap = new HashMap<>(); // Vehicle to station mapping
-    private Map<VehicleID, UserAccount> vehicleUserMap = new HashMap<>(); // Matched vehicle to user mapping
+    private static Map<VehicleID, PMVehicle> vehicleAvailability = new HashMap<>(); // true if available, false if not
+    private static Map<VehicleID, StationID> vehicleStationMap = new HashMap<>(); // Vehicle to station mapping
+    private static Map<VehicleID, UserAccount> vehicleUserMap = new HashMap<>(); // Matched vehicle to user mapping
+
+    private static Map<String,JourneyService> activeJourneyServices = new HashMap<>(); // Manage Multiple Journeys all the same time
+    private static ArrayList<JourneyService> recordsJourneyServices = new ArrayList<>(); // Matched vehicle to user mapping
 
     @Override
     public void checkPMVAvail(VehicleID vhID) throws PMVNotAvailException, ConnectException {
@@ -60,7 +64,6 @@ public class ServerMC implements Server {
             throw new ConnectException("Vehicle is not at the specified station.");
         }
 
-
         setPairing(user, veh, st, loc, date);
     }
 
@@ -79,12 +82,32 @@ public class ServerMC implements Server {
         }
 
         // Register the service completion (persistent record simulation)
-        System.out.println("Service completed: " + user + " - " + veh + " - " + st + " - " + loc + " - " + date + " - " + avSp + " - " + dist + " - " + dur + " - " + imp);
+        // System.out.println("Service completed: " + user + " - " + veh + " - " + st + " - " + loc + " - " + date + " - " + avSp + " - " + dist + " - " + dur + " - " + imp);
 
         // Mark the vehicle as available and remove the pairing
         vehicle.setAvailb();
         vehicleUserMap.remove(veh);
         registerLocation(veh, st);
+
+        // Sets Server
+        String serviceId = String.format("%s_%s_%s",user.getId(),veh,st); // same user with the same veh at the same station is unique
+        JourneyService journeyService = activeJourneyServices.get(serviceId);
+        activeJourneyServices.remove(serviceId);
+
+        // Sets journey
+        journeyService.setEndPoint(loc);
+        journeyService.setEndDate(date.toLocalDate());
+        journeyService.setEndHour(date.toLocalTime());
+        journeyService.setAvgSpeed(avSp);
+        journeyService.setDistance(dist);
+        journeyService.setDuration(dur);
+        journeyService.setImportCost(imp);
+
+        try {
+            unPairRegisterService(journeyService);
+        } catch (PairingNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -93,6 +116,13 @@ public class ServerMC implements Server {
         vehicle.setNotAvailb();
         vehicleUserMap.put(veh, user); // Assign user to the vehicle
         vehicleStationMap.put(veh, st); // Update the vehicle's station
+
+        String serviceId = String.format("%s_%s_%s",user.getId(),veh,st); // same user with the same veh at the same station is unique
+        JourneyService journeyService = new JourneyService(serviceId, loc);
+        journeyService.setInitDate(date.toLocalDate());
+        journeyService.setInitHour(date.toLocalTime());
+        journeyService.setServiceInit();
+        activeJourneyServices.put(serviceId,journeyService);
     }
 
     @Override
@@ -100,9 +130,9 @@ public class ServerMC implements Server {
         if (s == null) {
             throw new PairingNotFoundException("Journey service is null.");
         }
-
         // Simulation of service unregistration
-        System.out.println("Unregistering journey service: " + s);
+        s.setServiceFinish();
+        recordsJourneyServices.add(s);
     }
 
     @Override
@@ -112,4 +142,3 @@ public class ServerMC implements Server {
         }
     }
 }
-
