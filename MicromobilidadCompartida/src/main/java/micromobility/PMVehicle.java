@@ -46,8 +46,8 @@ public class PMVehicle {
     }
 
     // Getter methods
-    public String getId() {
-        return id.toString();
+    public VehicleID getId() {
+        return id;
     }
 
     public PMVState getState() {

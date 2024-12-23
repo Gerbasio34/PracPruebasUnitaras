@@ -42,6 +42,7 @@ public class JourneyRealizeHandler {
         this.user = user;
         this.vehicle = vehicle;
 
+
     }
 
     // Setter methods for injecting dependences
@@ -82,6 +83,8 @@ public class JourneyRealizeHandler {
         //decode the QR to obtain the VehicleID
         VehicleID vehicleID = qrDecoder.getVehicleID(vehicle.getQRCode());
 
+        vehicle.setId(vehicleID);
+
         //check if the vehicle is available
         server.checkPMVAvail(vehicleID);
 
@@ -102,6 +105,11 @@ public class JourneyRealizeHandler {
             throws ConnectException, InvalidPairingArgsException,
             PairingNotFoundException, ProceduralException {
         // Implementation
+        calculateValues(vehicle.getLocation(), date);
+        calculateImport(localJourneyService.getDistance(), localJourneyService.getDuration(), localJourneyService.getAvgSpeed(), localJourneyService.getEndDate());
+        server.stopPairing(user, vehicle.getId(),stID, vehicle.getLocation(), localJourneyService.getEndDate(), localJourneyService.getAvgSpeed(), localJourneyService.getDistance(), localJourneyService.getDuration(), localJourneyService.getImportCost());
+        vehicle.setAvailb();
+        localJourneyService.setServiceFinish();
     }
 
     // Input events from the unbonded Bluetooth channel
@@ -151,7 +159,7 @@ public class JourneyRealizeHandler {
         if (durationInMinutes > 0) {
             localJourneyService.setAvgSpeed((localJourneyService.getDistance() / durationInMinutes) * 60);
         } else {
-            localJourneyService.setAvgSpeed(0.0);
+            localJourneyService.setAvgSpeed(0);
         }
     }
 

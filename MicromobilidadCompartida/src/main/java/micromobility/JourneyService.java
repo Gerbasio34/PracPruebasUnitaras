@@ -4,18 +4,19 @@ import data.GeographicPoint;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class JourneyService {
     // Attributes
-    private LocalDate initDate; // Start date
+    private LocalDateTime initDate; // Start date
     private LocalTime initHour; // Start time
     private int duration; // Duration of the journey
-    private double distance; // Distance traveled (in kilometers)
-    private double avgSpeed; // Average speed (in km/h)
+    private float distance; // Distance traveled (in kilometers)
+    private float avgSpeed; // Average speed (in km/h)
     private GeographicPoint originPoint; // Starting point
     private GeographicPoint endPoint; // End point
-    private LocalDate endDate; // End date
+    private LocalDateTime endDate; // End date
     private LocalTime endHour; // End time
     private BigDecimal importCost; // Total cost of the journey
     private String serviceID; // Unique service ID
@@ -28,8 +29,8 @@ public class JourneyService {
         this.initDate = null; // Set when the service starts
         this.initHour = null; // Set when the service starts
         this.duration = 0; // Calculated when the service ends
-        this.distance = 0.0; // Initially 0
-        this.avgSpeed = 0.0; // Calculated when the service ends
+        this.distance = 0; // Initially 0
+        this.avgSpeed = 0; // Calculated when the service ends
         this.originPoint = originPoint;
 
         this.endPoint = null; // Set when the service ends
@@ -41,11 +42,11 @@ public class JourneyService {
 
     // GETTERS SETTERS
 
-    public LocalDate getInitDate() {
+    public LocalDateTime getInitDate() {
         return initDate;
     }
 
-    public void setInitDate(LocalDate initDate) {
+    public void setInitDate(LocalDateTime initDate) {
         this.initDate = initDate;
     }
 
@@ -65,19 +66,19 @@ public class JourneyService {
         this.duration = duration;
     }
 
-    public double getDistance() {
+    public float getDistance() {
         return distance;
     }
 
-    public void setDistance(double distance) {
+    public void setDistance(float distance) {
         this.distance = distance;
     }
 
-    public double getAvgSpeed() {
+    public float getAvgSpeed() {
         return avgSpeed;
     }
 
-    public void setAvgSpeed(double avgSpeed) {
+    public void setAvgSpeed(float avgSpeed) {
         this.avgSpeed = avgSpeed;
     }
 
@@ -97,11 +98,11 @@ public class JourneyService {
         this.endPoint = endPoint;
     }
 
-    public LocalDate getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 
