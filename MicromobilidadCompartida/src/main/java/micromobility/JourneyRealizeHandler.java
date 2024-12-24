@@ -76,7 +76,6 @@ public class JourneyRealizeHandler {
     // User interface input events
     public void scanQR() throws ConnectException, InvalidPairingArgsException, CorruptedImgException, PMVNotAvailException,
             ProceduralException {
-        // Implementation
         // Initialize the QRDecoderVMP instance before each test
         qrDecoder = new QRDecoderVMP();
 
@@ -124,7 +123,6 @@ public class JourneyRealizeHandler {
     // Input events from the Arduino microcontroller channel
     public void startDriving()
             throws ConnectException, ProceduralException {
-        // Implementation
 
         try {
             arduino.startDriving();
@@ -143,7 +141,12 @@ public class JourneyRealizeHandler {
 
     public void stopDriving()
             throws ConnectException, ProceduralException {
-        // Implementation
+        // before needs to reconnect with UnbondedBTSignal
+        try {
+            arduino.stopDriving();
+        } catch (PMVPhisicalException e) {
+            throw new ProceduralException(e);
+        }
     }
 
     // Internal operations

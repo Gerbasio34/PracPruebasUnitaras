@@ -26,7 +26,6 @@ public class PMVehicle_sensorsTest {
                 PMVState.AVAILABLE,
                 new GeographicPoint(40.7128f, -74.0060f), // Updated constructor with float values
                 75.0,
-                "",
                 mockSensors
         );
 
