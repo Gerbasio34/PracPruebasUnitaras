@@ -5,19 +5,15 @@ import data.StationID;
 import data.UserAccount;
 import data.VehicleID;
 import exception.*;
-import services.Server;
 import services.ServerMC;
 import services.smartfeatures.ArduinoMicroControllerVMP;
 import services.smartfeatures.QRDecoderVMP;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 // Class that handles events and operations related to journey realization.
 public class JourneyRealizeHandler {
@@ -41,8 +37,6 @@ public class JourneyRealizeHandler {
         this.gp = gp;
         this.user = user;
         this.vehicle = vehicle;
-
-
     }
 
     // Setter methods for injecting dependences
@@ -74,8 +68,7 @@ public class JourneyRealizeHandler {
     }
 
     // User interface input events
-    public void scanQR() throws ConnectException, InvalidPairingArgsException, CorruptedImgException, PMVNotAvailException,
-            ProceduralException {
+    public void scanQR() throws ConnectException, InvalidPairingArgsException, CorruptedImgException, PMVNotAvailException, ProceduralException {
         // Initialize the QRDecoderVMP instance before each test
         qrDecoder = new QRDecoderVMP();
 
@@ -91,6 +84,8 @@ public class JourneyRealizeHandler {
         // Establish Bluetooth connection
         arduino.setBTconnection();
 
+        vehicle.setNotAvailb();
+
         String serviceId = String.format("%s_%s_%s",user.getId(),vehicleID,stID); // same user with the same veh at the same station is unique
         localJourneyService = new JourneyService(
                 serviceId,
@@ -101,10 +96,10 @@ public class JourneyRealizeHandler {
         server.registerPairing(user, vehicleID, stID, gp, date);
     }
 
-    public void unPairVehicle()
-            throws ConnectException, InvalidPairingArgsException,
-            PairingNotFoundException, ProceduralException {
-        // Implementation
+    public void unPairVehicle() throws ConnectException, InvalidPairingArgsException, PairingNotFoundException, ProceduralException {
+        localJourneyService.setEndPoint(vehicle.getLocation());
+        localJourneyService.setEndDate(LocalDateTime.now());
+        localJourneyService.setEndHour(LocalTime.now());
         calculateValues(vehicle.getLocation(), date);
         calculateImport(localJourneyService.getDistance(), localJourneyService.getDuration(), localJourneyService.getAvgSpeed(), localJourneyService.getEndDate());
         server.stopPairing(user, vehicle.getId(),stID, vehicle.getLocation(), localJourneyService.getEndDate(), localJourneyService.getAvgSpeed(), localJourneyService.getDistance(), localJourneyService.getDuration(), localJourneyService.getImportCost());
@@ -135,8 +130,11 @@ public class JourneyRealizeHandler {
             throw new ProceduralException(e);
         }
 
-        localJourneyService.setServiceInit();
         vehicle.setUnderWay();
+        localJourneyService.setOriginPoint(vehicle.getLocation());
+        localJourneyService.setInitDate(LocalDateTime.now());
+        localJourneyService.setInitHour(LocalTime.now());
+        localJourneyService.setServiceInit();
     }
 
     public void stopDriving()

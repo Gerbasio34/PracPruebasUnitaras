@@ -3,7 +3,6 @@ package micromobility;
 import data.GeographicPoint;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 

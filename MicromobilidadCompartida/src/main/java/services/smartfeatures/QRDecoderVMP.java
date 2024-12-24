@@ -11,7 +11,7 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import java.awt.image.BufferedImage;
 
-public class QRDecoderVMP {
+public class QRDecoderVMP implements QRDecoder {
 
     public VehicleID getVehicleID(BufferedImage QRImg) throws CorruptedImgException {
         try {

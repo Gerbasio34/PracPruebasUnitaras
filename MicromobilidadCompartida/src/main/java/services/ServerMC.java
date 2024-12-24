@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -113,6 +114,9 @@ public class ServerMC implements Server {
 
         String serviceId = String.format("%s_%s_%s",user.getId(),veh,st); // same user with the same veh at the same station is unique
         JourneyService journeyService = new JourneyService(serviceId, loc);
+        journeyService.setOriginPoint(vehicle.getLocation());
+        journeyService.setInitDate(LocalDateTime.now());
+        journeyService.setInitHour(LocalTime.now());
         journeyService.setServiceInit();
         activeJourneyServices.put(serviceId,journeyService);
     }
@@ -128,8 +132,6 @@ public class ServerMC implements Server {
         // Simulation of service unregistration
         JourneyService journeyService = activeJourneyServices.get(s.getServiceID());
         // Sets journey values
-        journeyService.setInitDate(s.getInitDate());
-        journeyService.setInitHour(s.getInitHour());
         journeyService.setEndPoint(s.getEndPoint());
         journeyService.setEndDate(s.getEndDate());
         journeyService.setEndHour(s.getEndHour());
@@ -137,6 +139,7 @@ public class ServerMC implements Server {
         journeyService.setDistance(s.getDistance());
         journeyService.setDuration(s.getDuration());
         journeyService.setImportCost(s.getImportCost());
+        journeyService.setServiceFinish();
         recordsJourneyServices.add(s);
     }
 
