@@ -1,42 +1,48 @@
 package micromobility;
 
 import data.GeographicPoint;
+import data.sensors.SensorData;
+import data.sensors.SensorLight;
+import data.sensors.SensorTemperature;
+import data.sensors.SensorBrake;
+import data.sensors.SensorSpeed;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.imageio.ImageIO;
-
+import java.util.ArrayList;
 
 class PMVehicleTest {
 
     private PMVehicle vehicle;
     private GeographicPoint location;
-    private BufferedImage QRCode;
 
     // Set up before each test
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
         // Initialize objects required for the tests
         location = new GeographicPoint(40.4168f, -3.7038f); // Madrid coordinates
-        // Load QR
-        vehicle = new PMVehicle("VH-123456-TestVehicle", PMVState.AVAILABLE, location, 80.0, "qrcode-dummy.png");
+        ArrayList<SensorData> sensors = new ArrayList<>();
+        sensors.add(new SensorLight(false));
+        sensors.add(new SensorTemperature(20.0));
+        sensors.add(new SensorBrake(false));
+        sensors.add(new SensorSpeed(0.0));
+
+        // Create a PMVehicle instance
+        vehicle = new PMVehicle(PMVState.AVAILABLE, location, 80.0, sensors);
     }
 
     // Test1: Verify that the PMVehicle is created successfully with valid parameters
     @Test
     void testVehicleCreation() {
         // Check if the PMVehicle object is correctly initialized
-        assertEquals("VehicleID{id='VH-123456-TestVehicle'}", vehicle.getId());
+        assertNull(vehicle.getId()); // By default, the ID is null until set explicitly
         assertEquals(PMVState.AVAILABLE, vehicle.getState());
         assertEquals(location, vehicle.getLocation());
-        assertEquals(80.0, vehicle.getChargeLevel());
-        assertNotNull(vehicle.getQRCode());
+        assertEquals(80.0, vehicle.getChargeLevel(), 0.01);
+        assertNull(vehicle.getQRCode()); // QRCode should be null by default
     }
 
     // Test2: Verify that setting a new location updates the location of the vehicle
@@ -58,10 +64,10 @@ class PMVehicleTest {
     @Test
     void testSetChargeLevel() {
         vehicle.setChargeLevel(50.0); // Set charge level to 50%
-        assertEquals(50.0, vehicle.getChargeLevel()); // Check if charge level is updated
+        assertEquals(50.0, vehicle.getChargeLevel(), 0.01); // Check if charge level is updated
     }
 
-    // Test5: Verify that setting an invalid charge level (greater than 100) throws an exception
+    // Test5: Verify that setting an invalid charge level throws an exception
     @Test
     void testSetChargeLevelInvalid() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> vehicle.setChargeLevel(150.0));
@@ -92,8 +98,10 @@ class PMVehicleTest {
         Sensor type: Temperature Sensor: Current temperature: 20.0°C
         Sensor type: Light Sensor: Current brake is : OFF
         Sensor type: Speed Sensor: Current speed: 0.0km/h
-        """;
-        assertEquals(expectedData, vehicle.getSensorsData()); // Check if sensors data is returned correctly
+        """.trim(); // Ajustar al formato real
+
+        String actualData = vehicle.getSensorsData().trim(); // Aseguramos que eliminamos espacios extra
+        assertEquals(expectedData, actualData); // Comparamos
     }
 
     // Test8: Verify that the QRCode setter works correctly
