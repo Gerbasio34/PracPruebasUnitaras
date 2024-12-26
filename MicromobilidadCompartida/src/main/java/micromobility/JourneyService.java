@@ -61,7 +61,9 @@ public class JourneyService {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(int duration) throws IllegalArgumentException{
+        if (duration < 0)
+            throw new IllegalArgumentException("Duration must be a positive number");
         this.duration = duration;
     }
 
@@ -69,7 +71,9 @@ public class JourneyService {
         return distance;
     }
 
-    public void setDistance(float distance) {
+    public void setDistance(float distance) throws IllegalArgumentException {
+        if (distance < 0)
+            throw new IllegalArgumentException("Distance must be a positive number");
         this.distance = distance;
     }
 
@@ -129,6 +133,9 @@ public class JourneyService {
         this.serviceID = serviceID;
     }
 
+    public boolean getInProgress(){
+        return inProgress;
+    }
     // Method to initialize the service
     public void setServiceInit() {
         if (inProgress) {
