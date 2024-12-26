@@ -29,8 +29,10 @@ public class MockServer implements Server {
             throw new ConnectException("VehicleID is null, unable to connect to server.");
         }
 
-        if (!vehicleAvailability.containsKey(vhID) || !vehicleAvailability.get(vhID)) {
-            throw new PMVNotAvailException("Vehicle is not available.");
+        if (vehicleAvailability.containsKey(vhID)){
+            if (!vehicleAvailability.get(vhID)) {
+                throw new PMVNotAvailException("Vehicle is not available.");
+            }
         }
     }
 
@@ -68,5 +70,4 @@ public class MockServer implements Server {
     public void registerLocation(VehicleID veh, StationID st) {
 
     }
-
 }

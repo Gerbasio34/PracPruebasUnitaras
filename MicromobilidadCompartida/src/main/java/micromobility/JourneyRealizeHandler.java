@@ -74,6 +74,10 @@ public class JourneyRealizeHandler {
         return stID;
     }
 
+    public JourneyService getLocalJourneyService(){
+        return localJourneyService;
+    }
+
     // User interface input events
     public void scanQR() throws ConnectException, InvalidPairingArgsException, CorruptedImgException, PMVNotAvailException, ProceduralException {
         // Initialize the QRDecoderVMP instance before each test
@@ -91,8 +95,6 @@ public class JourneyRealizeHandler {
         // Establish Bluetooth connection
         arduino.setBTconnection();
 
-        vehicle.setNotAvailb();
-
         String serviceId = String.format("%s_%s_%s",user.getId(),vehicleID,stID); // same user with the same veh at the same station is unique
         localJourneyService = new JourneyService(
                 serviceId,
@@ -101,6 +103,8 @@ public class JourneyRealizeHandler {
 
         //try to register the pairing of the user with the vehicle
         server.registerPairing(user, vehicleID, stID, gp, date);
+
+        vehicle.setNotAvailb();
     }
 
     public void unPairVehicle() throws ConnectException, InvalidPairingArgsException, PairingNotFoundException, ProceduralException {
