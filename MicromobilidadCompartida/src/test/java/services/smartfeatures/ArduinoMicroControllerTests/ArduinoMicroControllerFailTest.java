@@ -1,13 +1,17 @@
-package services.smartfeatures;
+package services.smartfeatures.ArduinoMicroControllerTests;
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import java.net.ConnectException;
 import exception.PMVPhisicalException;
 import exception.ProceduralException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import services.smartfeatures.ArduinoMicroControllerVMP;
 
-public class ArduinoMicroControllerVMPTest {
+import java.net.ConnectException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ArduinoMicroControllerFailTest {
 
     private ArduinoMicroControllerVMP controller;
 
@@ -18,15 +22,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test1: Should establish a Bluetooth connection successfully
-    public void testSetBTconnectionValid() throws ConnectException {
-        controller.setBTconnection();
-        // Assert that Bluetooth is connected
-        assertTrue(controller.getBtConnected());
-    }
-
-    @Test
-    // Test2: Should throw ConnectException if Bluetooth is already connected
+    @DisplayName("Test1: Should throw ConnectException if Bluetooth is already connected")
     public void testSetBTconnectionAlreadyConnected() {
         try {
             controller.setBTconnection();
@@ -39,22 +35,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test3: Should not throw any Exception it's a valid journey
-    public void testValidJourney() throws ConnectException, ProceduralException, InterruptedException, PMVPhisicalException {
-        controller.setBTconnection();  // Establish Bluetooth connection
-        controller.setVehicleBeingDriven(true);  // Vehicle is being driven
-        controller.startDriving();
-        controller.setBraking(true);  // Driver is braking
-        Thread.sleep(3000);
-        try {
-            controller.stopDriving();
-        } catch (Exception e) {
-            fail(String.format("Exception %s",e.getMessage()));
-        }
-    }
-
-    @Test
-    // Test4: Should throw ConnectException if Bluetooth is not connected
+    @DisplayName("Test2: Should throw ConnectException if Bluetooth is not connected")
     public void testSetBeingDrivenNoConnection() {
         try {
             controller.setVehicleBeingDriven(true);
@@ -66,7 +47,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test5: Should throw ConnectException if Bluetooth is not connected
+    @DisplayName("Test3: Should throw ConnectException if Bluetooth is not connected")
     public void testSetBrakingNoConnection() {
         try {
             controller.setBraking(true);  // Driver is braking
@@ -77,7 +58,7 @@ public class ArduinoMicroControllerVMPTest {
         }
     }
     @Test
-    // Test6: Should throw ProceduralException if the vehicle is already in use
+    @DisplayName("Test4: Should throw ProceduralException if the vehicle is already in use")
     public void testStartDrivingWithVehicleInUse() throws ConnectException, PMVPhisicalException, ProceduralException {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setVehicleBeingDriven(true);  // Ready to start driving
@@ -92,7 +73,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test7: Should throw ConnectException if Bluetooth is not connected when stopping
+    @DisplayName("Test5: Should throw ConnectException if Bluetooth is not connected when stopping")
     public void testStopDrivingNoConnection() throws ProceduralException, PMVPhisicalException{
         try {
             controller.stopDriving();
@@ -104,7 +85,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test8: Should throw ProceduralException if the vehicle is not being driven
+    @DisplayName("Test6: Should throw ProceduralException if the vehicle is not being driven")
     public void testStopDrivingVehicleNotBeingDriven() throws ConnectException, PMVPhisicalException {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setBraking(true);  // Driver is braking
@@ -118,7 +99,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test9: Should throw PMVPhisicalException if there is a technical failure when stopping
+    @DisplayName("Test7: Should throw PMVPhisicalException if there is a technical failure when stopping")
     public void testStopDrivingWithTechnicalFailure() throws ConnectException, ProceduralException, InterruptedException, PMVPhisicalException {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setVehicleBeingDriven(true);  // Vehicle is being driven
@@ -136,7 +117,7 @@ public class ArduinoMicroControllerVMPTest {
     }
 
     @Test
-    // Test10: Should throw ProceduralException if it's in movement
+    @DisplayName("Test8: Should throw ProceduralException if it's in movement")
     public void testStopDrivingWhileMoving() throws ConnectException, ProceduralException, PMVPhisicalException {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setVehicleBeingDriven(true);  // Vehicle is being driven
@@ -152,17 +133,4 @@ public class ArduinoMicroControllerVMPTest {
         }
     }
 
-    @Test
-    // Test11: Should reset all states when undoing the Bluetooth connection
-    public void testUndoBTconnection() throws ConnectException {
-        controller.setBTconnection();  // Establish Bluetooth connection
-        controller.setVehicleBeingDriven(true);  // Start vehicle usage
-        controller.undoBTconnection();  // Undo the connection
-        // Assert that all states are reset
-        assertFalse(controller.getBtConnected());
-        assertFalse(controller.getVehicleInUse());
-        assertFalse(controller.getVehicleBeingDriven());
-        assertFalse(controller.getTechnicalFailure());
-        assertFalse(controller.getBraking());
-    }
 }

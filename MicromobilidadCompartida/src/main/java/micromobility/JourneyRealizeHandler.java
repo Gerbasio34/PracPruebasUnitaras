@@ -62,6 +62,10 @@ public class JourneyRealizeHandler {
         this.stID = stID;
     }
 
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
     //GETTERS
     public StationID getStID() {
         return stID;
