@@ -1,23 +1,26 @@
-package micromobility;
+package micromobility.PMVehicleTests;
 
 import data.GeographicPoint;
+import data.sensors.MockSensorDataA;
+import data.sensors.MockSensorDataB;
 import data.sensors.SensorData;
-import data.sensors.SensorLight;
-import data.sensors.SensorTemperature;
-import data.sensors.SensorBrake;
-import data.sensors.SensorSpeed;
+import micromobility.PMVState;
+import micromobility.PMVehicle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-class PMVehicleTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+class PMVehicleFailTest {
 
     private PMVehicle vehicle;
     private GeographicPoint location;
+    private SensorData sensorMockA = new MockSensorDataA(true);
+    private SensorData sensorMockB = new MockSensorDataB(10.2f);
+    private
 
     // Set up before each test
     @BeforeEach
@@ -25,32 +28,11 @@ class PMVehicleTest {
         // Initialize objects required for the tests
         location = new GeographicPoint(40.4168f, -3.7038f); // Madrid coordinates
         ArrayList<SensorData> sensors = new ArrayList<>();
-        sensors.add(new SensorLight(false));
-        sensors.add(new SensorTemperature(20.0));
-        sensors.add(new SensorBrake(false));
-        sensors.add(new SensorSpeed(0.0));
+        sensors.add(sensorMockA);
+        sensors.add(sensorMockB);
 
         // Create a PMVehicle instance
         vehicle = new PMVehicle(PMVState.AVAILABLE, location, 80.0, sensors);
-    }
-
-    // Test1: Verify that the PMVehicle is created successfully with valid parameters
-    @Test
-    void testVehicleCreation() {
-        // Check if the PMVehicle object is correctly initialized
-        assertNull(vehicle.getId()); // By default, the ID is null until set explicitly
-        assertEquals(PMVState.AVAILABLE, vehicle.getState());
-        assertEquals(location, vehicle.getLocation());
-        assertEquals(80.0, vehicle.getChargeLevel(), 0.01);
-        assertNull(vehicle.getQRCode()); // QRCode should be null by default
-    }
-
-    // Test2: Verify that setting a new location updates the location of the vehicle
-    @Test
-    void testSetLocation() {
-        GeographicPoint newLocation = new GeographicPoint(41.3851f, 2.1734f); // Barcelona coordinates
-        vehicle.setLocation(newLocation);
-        assertEquals(newLocation, vehicle.getLocation()); // Check if location is updated
     }
 
     // Test3: Verify that setting a null location throws an exception
