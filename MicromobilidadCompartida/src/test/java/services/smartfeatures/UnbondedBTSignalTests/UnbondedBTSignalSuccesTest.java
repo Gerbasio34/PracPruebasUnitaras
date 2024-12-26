@@ -1,20 +1,21 @@
-package services.smartfeatures;
+package services.smartfeatures.UnbondedBTSignalTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import data.GeographicPoint;
 import data.UserAccount;
-import data.VehicleID;
 import micromobility.PMVState;
 import micromobility.PMVehicle;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.net.ConnectException;
 import data.StationID;
 import micromobility.JourneyRealizeHandler;
+import services.smartfeatures.UnbondedBTSignalVMP;
 
-public class UnbondedBTSignalVMPTest {
+public class UnbondedBTSignalSuccesTest {
 
     private UnbondedBTSignalVMP unbondedBTSignal;
     private JourneyRealizeHandler handler;
@@ -34,8 +35,8 @@ public class UnbondedBTSignalVMPTest {
         unbondedBTSignal = new UnbondedBTSignalVMP(handler, stationID); // Instantiate UnbondedBTSignalVMP
     }
 
-    // Test1: Verify that BTbroadcast correctly sends the StationID
     @Test
+    @DisplayName("Test1: Verify that BTbroadcast correctly sends the StationID")
     public void testBTbroadcastSendsStationID() {
         try {
             // Call the BTbroadcast method
@@ -49,27 +50,8 @@ public class UnbondedBTSignalVMPTest {
         }
     }
 
-    // Test2: Verify that a ConnectException is thrown in case of a connection error
     @Test
-    public void testBTbroadcastThrowsConnectException() {
-        // Simulate a connection error by modifying the behavior of the broadcastStationID method
-        handler = new JourneyRealizeHandler(user, gp, vehicle) {
-            @Override
-            public void broadcastStationID(StationID stID) throws ConnectException {
-                throw new ConnectException("Connection failed");
-            }
-        };
-
-        unbondedBTSignal = new UnbondedBTSignalVMP(handler, stationID);
-
-        // Verify that the ConnectException is correctly thrown
-        assertThrows(ConnectException.class, () -> {
-            unbondedBTSignal.BTbroadcast();
-        });
-    }
-
-    // Test3: Verify that the StationID can be updated using the setter
-    @Test
+    @DisplayName("Test2: Verify that the StationID can be updated using the setter")
     public void testSetStationID() {
         // Create a new StationID
         StationID newStationID = new StationID("ST-12345-Barcelona");
@@ -79,8 +61,8 @@ public class UnbondedBTSignalVMPTest {
         assertEquals(newStationID, unbondedBTSignal.getStationID(), "The StationID should be updated correctly.");
     }
 
-    // Test4: Verify that the broadcast interval is respected
     @Test
+    @DisplayName("Test3: Verify that the broadcast interval is respected")
     public void testBroadcastInterval() {
         // Measure the time before executing the broadcast
         long startTime = System.currentTimeMillis();
@@ -100,24 +82,5 @@ public class UnbondedBTSignalVMPTest {
         assertTrue(elapsedTime >= 1000, "The broadcast interval should be at least 1000ms.");
     }
 
-    // Test5: Verify that the transmission is correctly interrupted
-    @Test
-    public void testBTbroadcastInterrupt() {
-        // Create a new thread to simulate the behavior of BTbroadcast
-        Thread broadcastThread = new Thread(() -> {
-            try {
-                unbondedBTSignal.BTbroadcast();
-            } catch (ConnectException e) {
-                fail("ConnectException should not be thrown.");
-            }
-        });
 
-        broadcastThread.start();  // Start the thread
-
-        // Interrupt the broadcast thread
-        broadcastThread.interrupt();
-
-        // Check that the thread was correctly interrupted
-        assertTrue(broadcastThread.isInterrupted(), "The broadcast thread should have been interrupted.");
-    }
 }
