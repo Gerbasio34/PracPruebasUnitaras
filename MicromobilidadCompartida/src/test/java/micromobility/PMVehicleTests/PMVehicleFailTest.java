@@ -22,7 +22,7 @@ class PMVehicleFailTest {
     private SensorData sensorMockA = new MockSensorDataA(true);
     private SensorData sensorMockB = new MockSensorDataB(10.2f);
 
-
+    
     // Set up before each test
     @BeforeEach
     void setUp() {

@@ -15,7 +15,7 @@ class JourneyServiceFailTest {
 
     @BeforeEach
     void setUp() {
-        originPoint = new GeographicPoint(40.7128f, -74.0060f);
+        originPoint = new GeographicPoint(40.4168f, -3.7038f); // Madrid coordinates
         journeyService = new JourneyService("Service123", originPoint);
     }
 

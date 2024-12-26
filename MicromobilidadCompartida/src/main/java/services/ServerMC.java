@@ -95,6 +95,15 @@ public class ServerMC implements Server {
         JourneyService journeyService = activeJourneyServices.get(serviceId);
         activeJourneyServices.remove(serviceId);
 
+        // Sets journey
+        journeyService.setEndPoint(loc);
+        journeyService.setEndDate(date.toLocalDate().atStartOfDay());
+        journeyService.setEndHour(date.toLocalTime());
+        journeyService.setAvgSpeed(avSp);
+        journeyService.setDistance(dist);
+        journeyService.setDuration(dur);
+        journeyService.setImportCost(imp);
+
         try {
             unPairRegisterService(journeyService);
         } catch (PairingNotFoundException e) {
@@ -126,20 +135,8 @@ public class ServerMC implements Server {
         if (s == null) {
             throw new PairingNotFoundException("Journey service is null.");
         }
-        if (activeJourneyServices.get(s.getServiceID()) == null) {
-            throw new PairingNotFoundException("Journey service is null.");
-        }
-        // Simulation of service unregistration
-        JourneyService journeyService = activeJourneyServices.get(s.getServiceID());
-        // Sets journey values
-        journeyService.setEndPoint(s.getEndPoint());
-        journeyService.setEndDate(s.getEndDate());
-        journeyService.setEndHour(s.getEndHour());
-        journeyService.setAvgSpeed(s.getAvgSpeed());
-        journeyService.setDistance(s.getDistance());
-        journeyService.setDuration(s.getDuration());
-        journeyService.setImportCost(s.getImportCost());
-        journeyService.setServiceFinish();
+
+        s.setServiceFinish();
         recordsJourneyServices.add(s);
     }
 

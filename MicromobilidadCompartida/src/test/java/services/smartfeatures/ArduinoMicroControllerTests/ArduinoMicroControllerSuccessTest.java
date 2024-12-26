@@ -33,8 +33,6 @@ public class ArduinoMicroControllerSuccessTest {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setVehicleBeingDriven(true);  // Vehicle is being driven
         controller.startDriving();
-        controller.setBraking(true);  // Driver is braking
-        Thread.sleep(3000);
         try {
             controller.stopDriving();
         } catch (Exception e) {

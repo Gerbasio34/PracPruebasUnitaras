@@ -104,9 +104,7 @@ public class ArduinoMicroControllerFailTest {
         controller.setBTconnection();  // Establish Bluetooth connection
         controller.setVehicleBeingDriven(true);  // Vehicle is being driven
         controller.startDriving();
-        controller.setBraking(true);  // Driver is braking
         controller.setTechnicalFailure(true);  // Simulate a technical failure (e.g., brake failure)
-        Thread.sleep(3000);
         try {
             controller.stopDriving();
             fail("Expected PMVPhisicalException, but none was thrown");
@@ -115,22 +113,4 @@ public class ArduinoMicroControllerFailTest {
             assertEquals("Technical issue with the brakes, cannot stop the vehicle.", e.getMessage());
         }
     }
-
-    @Test
-    @DisplayName("Test8: Should throw ProceduralException if it's in movement")
-    public void testStopDrivingWhileMoving() throws ConnectException, ProceduralException, PMVPhisicalException {
-        controller.setBTconnection();  // Establish Bluetooth connection
-        controller.setVehicleBeingDriven(true);  // Vehicle is being driven
-        controller.startDriving();
-        controller.setBraking(true);  // Driver is braking
-        //no wait
-        try {
-            controller.stopDriving();
-            fail("Expected ProceduralException, but none was thrown");
-        } catch (ProceduralException e) {
-            // Assert that the exception message matches
-            assertEquals("The vehicle is moving, cannot stop right now.", e.getMessage());
-        }
-    }
-
 }

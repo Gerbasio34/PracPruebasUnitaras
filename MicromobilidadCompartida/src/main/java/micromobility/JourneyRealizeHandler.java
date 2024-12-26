@@ -5,8 +5,11 @@ import data.StationID;
 import data.UserAccount;
 import data.VehicleID;
 import exception.*;
+import services.Server;
 import services.ServerMC;
+import services.smartfeatures.ArduinoMicroController;
 import services.smartfeatures.ArduinoMicroControllerVMP;
+import services.smartfeatures.QRDecoder;
 import services.smartfeatures.QRDecoderVMP;
 
 import java.math.BigDecimal;
@@ -22,9 +25,9 @@ public class JourneyRealizeHandler {
     private StationID stID;
     private UserAccount user;
     private PMVehicle vehicle;
-    private QRDecoderVMP qrDecoder;
-    private ServerMC server;
-    private ArduinoMicroControllerVMP arduino;
+    private QRDecoder qrDecoder;
+    private Server server;
+    private ArduinoMicroController arduino;
     private GeographicPoint gp;
     private LocalDateTime date;
     private JourneyService localJourneyService;
@@ -40,10 +43,10 @@ public class JourneyRealizeHandler {
     }
 
     // Setter methods for injecting dependences
-    public void setServer(ServerMC server) {
+    public void setServer(Server server) {
         this.server = server;
     }
-    public void setArduino(ArduinoMicroControllerVMP arduino) {
+    public void setArduino(ArduinoMicroController arduino) {
         this.arduino = arduino;
     }
     public void setUser(UserAccount user) {
@@ -125,11 +128,6 @@ public class JourneyRealizeHandler {
 
         try {
             arduino.startDriving();
-            arduino.setVehicleBeingDriven(true);  // Vehicle is being driven
-            arduino.setBraking(true);  // Driver is braking
-            Thread.sleep(3000); // Simulate driver using the brake at least 3 seconds
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } catch (PMVPhisicalException e) {
             throw new ProceduralException(e);
         }
