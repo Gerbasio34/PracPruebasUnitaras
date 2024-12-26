@@ -23,9 +23,9 @@ import java.util.Map;
 public class ServerMC implements Server {
 
     // Simulation of a database using HashMaps
-    private static Map<VehicleID, PMVehicle> vehicleAvailability = new HashMap<>(); // true if available, false if not
-    private static Map<VehicleID, StationID> vehicleStationMap = new HashMap<>(); // Vehicle to station mapping
-    private static Map<VehicleID, UserAccount> vehicleUserMap = new HashMap<>(); // Matched vehicle to user mapping
+    public static Map<VehicleID, PMVehicle> vehicleAvailability = new HashMap<>(); // true if available, false if not
+    public static Map<VehicleID, StationID> vehicleStationMap = new HashMap<>(); // Vehicle to station mapping
+    public static Map<VehicleID, UserAccount> vehicleUserMap = new HashMap<>(); // Matched vehicle to user mapping
 
     private static Map<String,JourneyService> activeJourneyServices = new HashMap<>(); // Manage Multiple Journeys all the same time
     private static ArrayList<JourneyService> recordsJourneyServices = new ArrayList<>(); // Matched vehicle to user mapping
