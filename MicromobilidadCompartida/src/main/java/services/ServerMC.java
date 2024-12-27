@@ -1,9 +1,6 @@
 package services;
 
-import data.GeographicPoint;
-import data.StationID;
-import data.UserAccount;
-import data.VehicleID;
+import data.*;
 import exception.InvalidPairingArgsException;
 import exception.PMVNotAvailException;
 import exception.PairingNotFoundException;
@@ -29,6 +26,9 @@ public class ServerMC implements Server {
 
     private static Map<String,JourneyService> activeJourneyServices = new HashMap<>(); // Manage Multiple Journeys all the same time
     private static ArrayList<JourneyService> recordsJourneyServices = new ArrayList<>(); // Matched vehicle to user mapping
+
+    private static ArrayList<String> paymentRecords = new ArrayList<>(); //
+
 
     @Override
     public void checkPMVAvail(VehicleID vhID) throws PMVNotAvailException, ConnectException {
@@ -145,5 +145,12 @@ public class ServerMC implements Server {
         if (veh != null && st != null) {
             vehicleStationMap.put(veh, st); // Update the vehicle's location
         }
+    }
+
+    @Override
+    public void registerPayment(ServiceID servID, UserAccount user, BigDecimal imp, char payMeth) throws ConnectException {
+        String paymentRegister = String.format("%s_%s_%s_%c",servID.toString(),user.getId(),imp.toString(),payMeth);
+
+        paymentRecords.add(paymentRegister);
     }
 }

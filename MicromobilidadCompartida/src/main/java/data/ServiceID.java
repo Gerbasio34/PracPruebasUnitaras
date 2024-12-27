@@ -2,25 +2,23 @@ package data;
 
 import java.util.Objects;
 
-final public class VehicleID {
-
+final public class ServiceID {
     private final String id;
 
-    public VehicleID () {
-        throw new IllegalArgumentException("VehicleID cannot be null");
+    public ServiceID() {
+        throw new IllegalArgumentException("ServiceID cannot be null");
     }
 
-    public VehicleID(String id) {
+    public ServiceID(String id) {
         if (id == null) {
-            throw new IllegalArgumentException("VehicleID cannot be null");
+            throw new IllegalArgumentException("ServiceID cannot be null");
         }
-        if (!id.matches("VH-\\d{6}-[a-zA-Z]{1,30}")) { // Ejemplo: formato "VH-123456"
-            throw new IllegalArgumentException("Invalid VehicleID format. Expected 'VH-123456-name'");
+        if (!id.matches("VH-\\d{6}-[a-zA-Z]{1,30}")) { // Ejemplo: formato "SV-123456"
+            throw new IllegalArgumentException("Invalid ServiceID format. Expected 'SV-123456-name'");
         }
         this.id = id;
     }
 
-    // Getters
     public String getId() {
         return id;
     }
@@ -29,7 +27,7 @@ final public class VehicleID {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VehicleID vehicleID = (VehicleID) o;
+        ServiceID vehicleID = (ServiceID) o;
         return Objects.equals(id, vehicleID.id);
     }
 
@@ -40,7 +38,6 @@ final public class VehicleID {
 
     @Override
     public String toString() {
-        return "VehicleID{" + "id='" + id + '\'' + '}';
+        return "ServiceID{" + "id='" + id + '\'' + '}';
     }
-
 }

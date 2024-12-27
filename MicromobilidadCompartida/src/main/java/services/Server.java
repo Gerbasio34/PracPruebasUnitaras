@@ -1,6 +1,7 @@
 package services;
 
 import data.GeographicPoint;
+import data.ServiceID;
 import data.StationID;
 import data.UserAccount;
 import data.VehicleID;
@@ -33,4 +34,6 @@ public interface Server { // External service for the persistent storage
             throws PairingNotFoundException;
     void registerLocation(VehicleID veh, StationID st);
 
+    void registerPayment(ServiceID servID, UserAccount user, BigDecimal imp,
+                         char payMeth) throws ConnectException;
 }
