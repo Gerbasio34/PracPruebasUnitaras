@@ -29,7 +29,6 @@ public class JourneyRealizeHandler {
     private Server server;
     private ArduinoMicroController arduino;
     private GeographicPoint gp;
-    private LocalDateTime date;
     private JourneyService localJourneyService;
 
     // Constructors
@@ -52,7 +51,6 @@ public class JourneyRealizeHandler {
     public void setUser(UserAccount user) {
         this.user = user;
     }
-
     public void setGp(GeographicPoint gp) {
         this.gp = gp;
     }
@@ -61,18 +59,12 @@ public class JourneyRealizeHandler {
         this.vehicle = vehicle;
     }
 
-    public void setStID(StationID stID) {
-        this.stID = stID;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
     //GETTERS
     public StationID getStID() {
         return stID;
     }
+
+    public GeographicPoint getGp() { return gp;}
 
     public JourneyService getLocalJourneyService(){
         return localJourneyService;
@@ -102,7 +94,7 @@ public class JourneyRealizeHandler {
         );
 
         //try to register the pairing of the user with the vehicle
-        server.registerPairing(user, vehicleID, stID, gp, date);
+        server.registerPairing(user, vehicleID, stID, gp, LocalDateTime.now());
 
         vehicle.setNotAvailb();
     }
@@ -111,7 +103,8 @@ public class JourneyRealizeHandler {
         localJourneyService.setEndPoint(vehicle.getLocation());
         localJourneyService.setEndDate(LocalDateTime.now());
         localJourneyService.setEndHour(LocalTime.now());
-        calculateValues(vehicle.getLocation(), date);
+        vehicle.setLocation(gp);
+        calculateValues(vehicle.getLocation(), LocalDateTime.now());
         calculateImport(localJourneyService.getDistance(), localJourneyService.getDuration(), localJourneyService.getAvgSpeed(), localJourneyService.getEndDate());
         server.stopPairing(user, vehicle.getId(),stID, vehicle.getLocation(), localJourneyService.getEndDate(), localJourneyService.getAvgSpeed(), localJourneyService.getDistance(), localJourneyService.getDuration(), localJourneyService.getImportCost());
         vehicle.setAvailb();
@@ -155,7 +148,9 @@ public class JourneyRealizeHandler {
 
     // Internal operations
     private void calculateValues(GeographicPoint gP, LocalDateTime date) {
-        localJourneyService.setDuration((int) Duration.between(localJourneyService.getInitHour(), date.toLocalTime()).toMinutes());
+        //Each second will represent minutes, this way we don't need to wait too much (in tests)
+        //instead of toMinutes() we use toSeconds()
+        localJourneyService.setDuration((int) Duration.between(localJourneyService.getInitHour(), date.toLocalTime()).toSeconds()); // change this toMinutes()
 
         GeographicPoint originPoint = localJourneyService.getOriginPoint();
 
@@ -191,6 +186,6 @@ public class JourneyRealizeHandler {
             surcharge = baseImport.multiply(weekendSurcharge);
         }
 
-        localJourneyService.setImportCost(baseImport.add(speedPenalty).add(surcharge));
+        localJourneyService.setImportCost(baseImport.add(speedPenalty).add(surcharge).setScale(2, BigDecimal.ROUND_HALF_UP));
     }
 }
