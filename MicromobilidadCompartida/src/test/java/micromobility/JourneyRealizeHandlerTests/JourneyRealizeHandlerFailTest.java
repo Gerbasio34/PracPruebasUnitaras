@@ -86,52 +86,5 @@ class JourneyRealizeHandlerFailTest {
             journeyHandler.unPairVehicle();
         });
     }
-    /*
-    @Test
-    @DisplayName("Test 5: QR scanning fails with corrupted image")
-    public void testScanQRCorruptedImage() throws ConnectException {
-        // Simulating a corrupted QR code scenario
-        arduinoMock.setQRCodeCorrupted(true);
 
-        assertThrows(CorruptedImgException.class, () -> {
-            unbondedBTSignal.BTbroadcast();
-            journeyHandler.scanQR();
-        });
-    }
-
-    @Test
-    @DisplayName("Test 6: Server connection fails during pairing")
-    public void testServerConnectionFailure() throws ConnectException {
-        serverMock.setConnectionFailure(true);
-
-        assertThrows(ConnectException.class, () -> {
-            unbondedBTSignal.BTbroadcast();
-            journeyHandler.scanQR();
-        });
-    }
-
-    @Test
-    @DisplayName("Test 7: Start driving fails when vehicle state is incorrect")
-    public void testStartDrivingWithIncorrectState() throws ConnectException, CorruptedImgException, InvalidPairingArgsException {
-        vehicle.setNotAvailb();
-        unbondedBTSignal.BTbroadcast();
-        journeyHandler.scanQR();
-
-        assertThrows(PMVNotAvailException.class, () -> {
-            journeyHandler.startDriving();
-        });
-    }
-
-    @Test
-    @DisplayName("Test 8: Calculate import fails with invalid parameters")
-    public void testCalculateImportWithInvalidParams() throws ProceduralException {
-        float invalidDistance = -10.0f; // Negative distance
-        int invalidDuration = -20;     // Negative duration
-        float invalidAvgSpeed = -30.0f; // Negative average speed
-
-        assertThrows(InvalidPairingArgsException.class, () -> {
-            journeyHandler.calculateImport(invalidDistance, invalidDuration, invalidAvgSpeed, null);
-        });
-    }
-    */
 }
