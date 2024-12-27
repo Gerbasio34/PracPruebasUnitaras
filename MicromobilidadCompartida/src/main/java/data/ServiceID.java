@@ -13,7 +13,7 @@ final public class ServiceID {
         if (id == null) {
             throw new IllegalArgumentException("ServiceID cannot be null");
         }
-        if (!id.matches("SV-\\d{6}-[a-zA-Z]{1,30}")) { // Ejemplo: formato "SV-123456"
+        if (!id.matches("UA-[a-zA-Z]+-\\d{1,5}_VH-\\d{6}-[a-zA-Z]+_ST-\\d{5}-[a-zA-Z]+")) { // Ejemplo: formato "SV-123456"
             throw new IllegalArgumentException("Invalid ServiceID format. Expected 'SV-123456-name'");
         }
         this.id = id;

@@ -92,7 +92,7 @@ public class ServerMC implements Server {
         registerLocation(veh, st);
 
         // Sets Server
-        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),veh,st)); // same user with the same veh at the same station is unique
+        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),veh.getId(),st.getId())); // same user with the same veh at the same station is unique
         JourneyService journeyService = activeJourneyServices.get(serviceId.getId());
         activeJourneyServices.remove(serviceId.getId());
 
@@ -122,7 +122,7 @@ public class ServerMC implements Server {
         vehicleUserMap.put(veh, user); // Assign user to the vehicle
         vehicleStationMap.put(veh, st); // Update the vehicle's station
 
-        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),veh,st)); // same user with the same veh at the same station is unique
+        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),veh.getId(),st.getId())); // same user with the same veh at the same station is unique
         JourneyService journeyService = new JourneyService(serviceId.getId(), loc);
         journeyService.setOriginPoint(vehicle.getLocation());
         journeyService.setInitDate(LocalDateTime.now());

@@ -87,13 +87,12 @@ public class JourneyRealizeHandler {
         if (stID == null){
             throw new ProceduralException("Bluetooth connection could not be completed");
         }
-        /*
-        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),vehicleID,stID)); // same user with the same veh at the same station is unique
+        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),vehicleID.getId(),stID.getId())); // same user with the same veh at the same station is unique
         localJourneyService = new JourneyService(
                 serviceId.getId(),
                 this.gp
         );
-*/
+
         //try to register the pairing of the user with the vehicle
         server.registerPairing(user, vehicleID, stID, gp, LocalDateTime.now());
 
