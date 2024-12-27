@@ -1,9 +1,6 @@
 package micromobility.JourneyRealizeHandlerTests;
 
-import data.GeographicPoint;
-import data.StationID;
-import data.UserAccount;
-import data.VehicleID;
+import data.*;
 import exception.InvalidPairingArgsException;
 import exception.PMVNotAvailException;
 import exception.PairingNotFoundException;
@@ -68,6 +65,11 @@ public class MockServer implements Server {
 
     @Override
     public void registerLocation(VehicleID veh, StationID st) {
+
+    }
+
+    @Override
+    public void registerPayment(ServiceID servID, UserAccount user, BigDecimal imp, char payMeth) throws ConnectException {
 
     }
 }
