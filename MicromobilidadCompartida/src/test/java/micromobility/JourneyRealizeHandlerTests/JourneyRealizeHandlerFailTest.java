@@ -62,8 +62,9 @@ class JourneyRealizeHandlerFailTest {
 
     @Test
     @DisplayName("Test 2: Start driving fails when vehicle is not paired")
-    public void testStartDrivingWithoutPairing() {
-        assertThrows(ProceduralException.class, () -> {
+    public void testStartDrivingWithoutPairing() throws ProceduralException, ConnectException {
+        assertDoesNotThrow(() -> unbondedBTSignal.BTbroadcast());
+        assertThrows(ConnectException.class, () -> {
             journeyHandler.startDriving();
         });
     }
@@ -71,6 +72,8 @@ class JourneyRealizeHandlerFailTest {
     @Test
     @DisplayName("Test 3: Stop driving fails when journey is not started")
     public void testStopDrivingWithoutStarting() {
+        assertDoesNotThrow(() -> unbondedBTSignal.BTbroadcast());
+        assertDoesNotThrow(() -> journeyHandler.scanQR());
         assertThrows(ProceduralException.class, () -> {
             journeyHandler.stopDriving();
         });
