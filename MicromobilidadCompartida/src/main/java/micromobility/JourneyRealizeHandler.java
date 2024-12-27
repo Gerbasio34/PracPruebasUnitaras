@@ -87,6 +87,10 @@ public class JourneyRealizeHandler {
         // Establish Bluetooth connection
         arduino.setBTconnection();
 
+        if (stID == null){
+            throw new ProceduralException("Bluetooth connection could not be completed");
+        }
+
         String serviceId = String.format("%s_%s_%s",user.getId(),vehicleID,stID); // same user with the same veh at the same station is unique
         localJourneyService = new JourneyService(
                 serviceId,
@@ -100,6 +104,14 @@ public class JourneyRealizeHandler {
     }
 
     public void unPairVehicle() throws ConnectException, InvalidPairingArgsException, PairingNotFoundException, ProceduralException {
+        if (vehicle.getState() == PMVState.AVAILABLE) {
+            throw new PairingNotFoundException("This vehicle it's not paired");
+        }
+
+        if (stID == null){
+            throw new ProceduralException("Bluetooth connection could not be completed");
+        }
+
         localJourneyService.setEndPoint(vehicle.getLocation());
         localJourneyService.setEndDate(LocalDateTime.now());
         localJourneyService.setEndHour(LocalTime.now());
@@ -122,6 +134,9 @@ public class JourneyRealizeHandler {
     // Input events from the Arduino microcontroller channel
     public void startDriving()
             throws ConnectException, ProceduralException {
+        if (vehicle.getState() == PMVState.UNDER_WAY) {
+            throw new ProceduralException("Vehicle is already being driven");
+        }
 
         try {
             arduino.startDriving();
@@ -138,6 +153,10 @@ public class JourneyRealizeHandler {
 
     public void stopDriving()
             throws ConnectException, ProceduralException {
+
+        if (vehicle.getState() != PMVState.UNDER_WAY) {
+            throw new ProceduralException("Vehicle is not being driven");
+        }
         // before needs to reconnect with UnbondedBTSignal
         try {
             arduino.stopDriving();

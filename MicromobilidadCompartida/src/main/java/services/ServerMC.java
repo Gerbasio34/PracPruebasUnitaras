@@ -27,7 +27,7 @@ public class ServerMC implements Server {
     private static Map<String,JourneyService> activeJourneyServices = new HashMap<>(); // Manage Multiple Journeys all the same time
     private static ArrayList<JourneyService> recordsJourneyServices = new ArrayList<>(); // Matched vehicle to user mapping
 
-    private static ArrayList<String> paymentRecords = new ArrayList<>(); //
+    public static ArrayList<String> paymentRecords = new ArrayList<>(); //
 
     public static boolean statusConnection = true;
 
