@@ -29,6 +29,7 @@ public class ServerMC implements Server {
 
     private static ArrayList<String> paymentRecords = new ArrayList<>(); //
 
+    public static boolean statusConnection = true;
 
     @Override
     public void checkPMVAvail(VehicleID vhID) throws PMVNotAvailException, ConnectException {
@@ -149,8 +150,11 @@ public class ServerMC implements Server {
 
     @Override
     public void registerPayment(ServiceID servID, UserAccount user, BigDecimal imp, char payMeth) throws ConnectException {
-        String paymentRegister = String.format("%s_%s_%s_%c",servID.toString(),user.getId(),imp.toString(),payMeth);
+        if(!statusConnection){
+            throw new ConnectException("Connection error when register payment");
+        }
 
+        String paymentRegister = String.format("%s_%s_%s_%c",servID.toString(),user.getId(),imp.toString(),payMeth);
         paymentRecords.add(paymentRegister);
     }
 }
