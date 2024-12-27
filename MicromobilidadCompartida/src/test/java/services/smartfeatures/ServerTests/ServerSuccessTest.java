@@ -1,9 +1,6 @@
 package services.smartfeatures.ServerTests;
 
-import data.GeographicPoint;
-import data.StationID;
-import data.UserAccount;
-import data.VehicleID;
+import data.*;
 import micromobility.PMVehicle;
 import micromobility.PMVState;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,5 +70,25 @@ public class ServerSuccessTest {
         // Verify that the vehicle is unpaired and marked as available
         assertNull(ServerMC.vehicleUserMap.get(vehicleID));
         assertTrue(ServerMC.vehicleAvailability.get(vehicleID).getState() == PMVState.AVAILABLE);
+    }
+
+    @Test
+    @DisplayName("Test4: successful payment registration")
+    public void testRegisterPayment_Success() throws Exception {
+        // Simulamos una conexión exitosa
+        server.setStatusConnection(true);  // Asegúrate de tener un setter para statusConnection
+
+        // Creamos los datos de entrada para el pago
+        ServiceID serviceID = new ServiceID("Service-123");
+        UserAccount user = new UserAccount("UA-imedio-2367");
+        BigDecimal amount = new BigDecimal("50.0");
+        char payMeth = 'C';  // Usamos 'C' para indicar tarjeta de crédito
+
+        // Llamamos al metodo registerPayment
+        assertDoesNotThrow(() -> server.registerPayment(serviceID, user, amount, payMeth));
+
+        // Verificamos que el pago se haya registrado correctamente
+        String expectedPayment = "Service-123_UA-imedio-2367_50.0_C";  // Comprobamos el formato esperado
+        assertTrue(ServerMC.paymentRecords.contains(expectedPayment));
     }
 }
