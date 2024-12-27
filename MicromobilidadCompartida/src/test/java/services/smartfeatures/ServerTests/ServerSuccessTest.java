@@ -21,7 +21,6 @@ public class ServerSuccessTest {
     private StationID stationID;
     private UserAccount userAccount;
     private GeographicPoint location;
-    private LocalDateTime date;
 
     @BeforeEach
     public void setUp() {
@@ -75,20 +74,13 @@ public class ServerSuccessTest {
     @Test
     @DisplayName("Test4: successful payment registration")
     public void testRegisterPayment_Success() throws Exception {
-        // Simulamos una conexión exitosa
-        server.setStatusConnection(true);  // Asegúrate de tener un setter para statusConnection
-
-        // Creamos los datos de entrada para el pago
-        ServiceID serviceID = new ServiceID("Service-123");
-        UserAccount user = new UserAccount("UA-imedio-2367");
+        ServiceID serviceID = new ServiceID("SV-123456-test");
         BigDecimal amount = new BigDecimal("50.0");
-        char payMeth = 'C';  // Usamos 'C' para indicar tarjeta de crédito
+        char payMeth = 'C';
 
-        // Llamamos al metodo registerPayment
-        assertDoesNotThrow(() -> server.registerPayment(serviceID, user, amount, payMeth));
+        assertDoesNotThrow(() -> server.registerPayment(serviceID, userAccount, amount, payMeth));
 
-        // Verificamos que el pago se haya registrado correctamente
-        String expectedPayment = "Service-123_UA-imedio-2367_50.0_C";  // Comprobamos el formato esperado
+        String expectedPayment = "SV-123456-test_UA-imedio-2367_50.0_C";
         assertTrue(ServerMC.paymentRecords.contains(expectedPayment));
     }
 }

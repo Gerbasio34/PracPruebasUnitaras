@@ -13,7 +13,7 @@ final public class ServiceID {
         if (id == null) {
             throw new IllegalArgumentException("ServiceID cannot be null");
         }
-        if (!id.matches("VH-\\d{6}-[a-zA-Z]{1,30}")) { // Ejemplo: formato "SV-123456"
+        if (!id.matches("SV-\\d{6}-[a-zA-Z]{1,30}")) { // Ejemplo: formato "SV-123456"
             throw new IllegalArgumentException("Invalid ServiceID format. Expected 'SV-123456-name'");
         }
         this.id = id;
@@ -27,8 +27,8 @@ final public class ServiceID {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ServiceID vehicleID = (ServiceID) o;
-        return Objects.equals(id, vehicleID.id);
+        ServiceID serviceID = (ServiceID) o;
+        return Objects.equals(id, serviceID.id);
     }
 
     @Override
