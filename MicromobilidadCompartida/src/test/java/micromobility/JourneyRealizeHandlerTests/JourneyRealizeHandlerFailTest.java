@@ -43,21 +43,19 @@ class JourneyRealizeHandlerFailTest {
         journeyHandler = new JourneyRealizeHandler(user, gp, vehicle);
         journeyHandler.setArduino(arduinoMock);
         journeyHandler.setServer(serverMock);
-        journeyHandler.setDate(LocalDateTime.now());
 
         unbondedBTSignal = new UnbondedBTSignalVMP(journeyHandler, stID);
         stID = new StationID("ST-12345-Madrid");
         unbondedBTSignal.setStationID(stID);
-
     }
 
     @Test
     @DisplayName("Test 1: Scan QR fails for unavailable vehicle")
-    public void testScanQRUnavailableVehicle() {
-        vehicle.setNotAvailb();
+    public void testScanQRUnavailableVehicle() throws CorruptedImgException, InvalidPairingArgsException, ProceduralException, PMVNotAvailException, ConnectException {
+        unbondedBTSignal.BTbroadcast();
+        journeyHandler.scanQR();
 
         assertThrows(PMVNotAvailException.class, () -> {
-            unbondedBTSignal.BTbroadcast();
             journeyHandler.scanQR();
         });
     }
