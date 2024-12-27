@@ -92,9 +92,9 @@ public class ServerMC implements Server {
         registerLocation(veh, st);
 
         // Sets Server
-        String serviceId = String.format("%s_%s_%s",user.getId(),veh,st); // same user with the same veh at the same station is unique
-        JourneyService journeyService = activeJourneyServices.get(serviceId);
-        activeJourneyServices.remove(serviceId);
+        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),veh,st)); // same user with the same veh at the same station is unique
+        JourneyService journeyService = activeJourneyServices.get(serviceId.getId());
+        activeJourneyServices.remove(serviceId.getId());
 
         // Sets journey
         journeyService.setEndPoint(loc);
@@ -122,13 +122,13 @@ public class ServerMC implements Server {
         vehicleUserMap.put(veh, user); // Assign user to the vehicle
         vehicleStationMap.put(veh, st); // Update the vehicle's station
 
-        String serviceId = String.format("%s_%s_%s",user.getId(),veh,st); // same user with the same veh at the same station is unique
-        JourneyService journeyService = new JourneyService(serviceId, loc);
+        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),veh,st)); // same user with the same veh at the same station is unique
+        JourneyService journeyService = new JourneyService(serviceId.getId(), loc);
         journeyService.setOriginPoint(vehicle.getLocation());
         journeyService.setInitDate(LocalDateTime.now());
         journeyService.setInitHour(LocalTime.now());
         journeyService.setServiceInit();
-        activeJourneyServices.put(serviceId,journeyService);
+        activeJourneyServices.put(serviceId.getId(),journeyService);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class ServerMC implements Server {
             throw new ConnectException("Connection error when register payment");
         }
 
-        String paymentRegister = String.format("%s_%s_%s_%c",servID.toString(),user.getId(),imp.toString(),payMeth);
+        String paymentRegister = String.format("%s_%s_%s_%c",servID.getId(),user.getId(),imp.toString(),payMeth);
         paymentRecords.add(paymentRegister);
     }
 }
