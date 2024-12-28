@@ -55,7 +55,7 @@ class JourneyRealizeHandlerSuccessTest {
     }
 
     @Test
-    @DisplayName("Test 1: Start driving correctly initializes the journey")
+    @DisplayName("Test1: Start driving correctly initializes the journey")
     public void testStartDriving() throws ConnectException, ProceduralException, CorruptedImgException, InvalidPairingArgsException, PMVNotAvailException {
         unbondedBTSignal.BTbroadcast();
         journeyHandler.scanQR();
@@ -69,7 +69,7 @@ class JourneyRealizeHandlerSuccessTest {
     }
 
     @Test
-    @DisplayName("Test 2: Stop driving correctly updates the journey and vehicle")
+    @DisplayName("Test2: Stop driving correctly updates the journey and vehicle")
     public void testStopDriving() throws ConnectException, ProceduralException, CorruptedImgException, InvalidPairingArgsException, PMVNotAvailException, PairingNotFoundException {
         unbondedBTSignal.BTbroadcast();
         journeyHandler.scanQR();
@@ -88,7 +88,7 @@ class JourneyRealizeHandlerSuccessTest {
 
 
     @Test
-    @DisplayName("Test 3: Calculate values correctly computes distance, duration, and average speed")
+    @DisplayName("Test3: Calculate values correctly computes distance, duration, and average speed")
     public void testCalculateValues() throws ConnectException, CorruptedImgException, InvalidPairingArgsException, ProceduralException, PMVNotAvailException, PairingNotFoundException, InterruptedException {
         unbondedBTSignal.BTbroadcast();
         journeyHandler.scanQR();
@@ -110,7 +110,7 @@ class JourneyRealizeHandlerSuccessTest {
     }
 
     @Test
-    @DisplayName("Test 4: Calculate import computes the correct cost")
+    @DisplayName("Test4: Calculate import computes the correct cost")
     public void testCalculateImport() throws ConnectException, InvalidPairingArgsException, PairingNotFoundException, ProceduralException, CorruptedImgException, PMVNotAvailException {
         unbondedBTSignal.BTbroadcast();
         journeyHandler.scanQR();
@@ -131,7 +131,7 @@ class JourneyRealizeHandlerSuccessTest {
     }
 
     @Test
-    @DisplayName("Test 5: QR Scanning correctly decodes vehicle ID and registers pairing")
+    @DisplayName("Test5: QR Scanning correctly decodes vehicle ID and registers pairing")
     public void testScanQRSuccess() throws ConnectException, InvalidPairingArgsException, CorruptedImgException, PMVNotAvailException, ProceduralException {
         VehicleID vehicleID = new VehicleID("VH-123456-nissan");
         vehicle.setId(vehicleID);
@@ -154,7 +154,7 @@ class JourneyRealizeHandlerSuccessTest {
     }
 
     @Test
-    @DisplayName("Test 7: Pay with Wallet")
+    @DisplayName("Test7: Pay with Wallet")
     public void testPayWithWallet() throws ConnectException, InvalidPairingArgsException, PairingNotFoundException, ProceduralException, CorruptedImgException, PMVNotAvailException {
         user.getUserWallet().addFunds(new BigDecimal(700));
         unbondedBTSignal.BTbroadcast();
@@ -169,8 +169,6 @@ class JourneyRealizeHandlerSuccessTest {
         journeyHandler.stopDriving();
         journeyHandler.unPairVehicle();
 
-
         assertDoesNotThrow(() -> journeyHandler.selectPaymentMethod('W'));
     }
-
 }

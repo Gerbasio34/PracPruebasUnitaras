@@ -50,7 +50,7 @@ class JourneyRealizeHandlerFailTest {
     }
 
     @Test
-    @DisplayName("Test 1: Scan QR fails for unavailable vehicle")
+    @DisplayName("Test1: Scan QR fails for unavailable vehicle")
     public void testScanQRUnavailableVehicle() throws CorruptedImgException, InvalidPairingArgsException, ProceduralException, PMVNotAvailException, ConnectException {
         unbondedBTSignal.BTbroadcast();
         journeyHandler.scanQR();
@@ -61,7 +61,7 @@ class JourneyRealizeHandlerFailTest {
     }
 
     @Test
-    @DisplayName("Test 2: Start driving fails when vehicle is not paired")
+    @DisplayName("Test2: Start driving fails when vehicle is not paired")
     public void testStartDrivingWithoutPairing() throws ProceduralException, ConnectException {
         assertDoesNotThrow(() -> unbondedBTSignal.BTbroadcast());
         assertThrows(ConnectException.class, () -> {
@@ -70,7 +70,7 @@ class JourneyRealizeHandlerFailTest {
     }
 
     @Test
-    @DisplayName("Test 3: Stop driving fails when journey is not started")
+    @DisplayName("Test3: Stop driving fails when journey is not started")
     public void testStopDrivingWithoutStarting() {
         assertDoesNotThrow(() -> unbondedBTSignal.BTbroadcast());
         assertDoesNotThrow(() -> journeyHandler.scanQR());
@@ -80,7 +80,7 @@ class JourneyRealizeHandlerFailTest {
     }
 
     @Test
-    @DisplayName("Test 4: Unpairing fails if not paired")
+    @DisplayName("Test4: Unpairing fails if not paired")
     public void testUnpairWithoutPairing() {
         assertThrows(PairingNotFoundException.class, () -> {
             journeyHandler.unPairVehicle();
