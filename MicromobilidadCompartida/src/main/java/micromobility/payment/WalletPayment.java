@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 public class WalletPayment extends Payment {
     private Wallet wallet;
 
-    public WalletPayment(JourneyService service, UserAccount user, Wallet wallet) {
-        super(service, user);
+    public WalletPayment(Wallet wallet) {
+        super();
         if (wallet == null) {
             throw new IllegalArgumentException("Wallet cannot be null");
         }
@@ -18,9 +18,8 @@ public class WalletPayment extends Payment {
     }
 
     @Override
-    public void processPayment() throws NotEnoughWalletException {
-        BigDecimal serviceCost = service.getImportCost();
-        wallet.deduct(serviceCost);
+    public void processPayment(BigDecimal imp) throws NotEnoughWalletException {
+        wallet.deduct(imp);
     }
 
     public Wallet getWallet() {

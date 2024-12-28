@@ -153,6 +153,24 @@ class JourneyRealizeHandlerSuccessTest {
         });
     }
 
+    @Test
+    @DisplayName("Test 7: Pay with Wallet")
+    public void testPayWithWallet() throws ConnectException, InvalidPairingArgsException, PairingNotFoundException, ProceduralException, CorruptedImgException, PMVNotAvailException {
+        user.getUserWallet().addFunds(new BigDecimal(700));
+        unbondedBTSignal.BTbroadcast();
+        journeyHandler.scanQR();
+        journeyHandler.startDriving();
+        // update location + stationID
+        StationID newLocationStation = new StationID("ST-12345-Madrid");
+        unbondedBTSignal.setStationID(newLocationStation);
+        unbondedBTSignal.BTbroadcast();
+        journeyHandler.setGp(new GeographicPoint(41.614159f, -0.625800f)); //Lleida (from madrid to lleida)
+        // end update location + stationID
+        journeyHandler.stopDriving();
+        journeyHandler.unPairVehicle();
 
+
+        assertDoesNotThrow(() -> journeyHandler.selectPaymentMethod('W'));
+    }
 
 }

@@ -1,6 +1,7 @@
 package micromobility.JourneyServiceTests;
 
 import data.GeographicPoint;
+import data.ServiceID;
 import micromobility.JourneyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,8 @@ class JourneyServiceSuccessTest {
     @BeforeEach
     void setUp() {
         originPoint = new GeographicPoint(40.4168f, -3.7038f); // Madrid coordinates
-        journeyService = new JourneyService("Service123", originPoint);
+        ServiceID serviceID = new ServiceID("UA-test-2367_VH-123456-Patinete_ST-12345-Lleida");
+        journeyService = new JourneyService(serviceID, originPoint);
     }
 
     @Test

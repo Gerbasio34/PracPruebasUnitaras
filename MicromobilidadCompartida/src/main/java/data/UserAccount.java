@@ -1,9 +1,13 @@
 package data;
 
+import micromobility.payment.Wallet;
+
+import java.math.BigDecimal;
 import java.util.Objects;
 
 final public class UserAccount {
     private final String id;
+    private Wallet userWallet;
 
     public UserAccount(String id) {
 
@@ -16,11 +20,15 @@ final public class UserAccount {
             throw new IllegalArgumentException("Invalid StationID format. Expected 'UA-username-max5numbers'");
         }
         this.id = id;
+        this.userWallet = new Wallet(new BigDecimal(0));
     }
 
     // Getters
     public String getId() {
         return id;
+    }
+    public Wallet getUserWallet() {
+        return userWallet;
     }
 
     @Override

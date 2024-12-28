@@ -2,6 +2,9 @@ package micromobility;
 
 import data.*;
 import exception.*;
+import micromobility.payment.Payment;
+import micromobility.payment.Wallet;
+import micromobility.payment.WalletPayment;
 import services.Server;
 import services.ServerMC;
 import services.smartfeatures.ArduinoMicroController;
@@ -27,6 +30,8 @@ public class JourneyRealizeHandler {
     private ArduinoMicroController arduino;
     private GeographicPoint gp;
     private JourneyService localJourneyService;
+    private Wallet wallet;
+    private Payment payment;
 
     // Constructors
     public JourneyRealizeHandler(UserAccount user, GeographicPoint gp, PMVehicle vehicle) {
@@ -89,7 +94,7 @@ public class JourneyRealizeHandler {
         }
         ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),vehicleID.getId(),stID.getId())); // same user with the same veh at the same station is unique
         localJourneyService = new JourneyService(
-                serviceId.getId(),
+                serviceId,
                 this.gp
         );
 
@@ -165,16 +170,24 @@ public class JourneyRealizeHandler {
         // Implementation
         switch (opt) {
             case 'C': // Credit
+                throw new ProceduralException("Pay method is not developed yet");
 
             case 'B': // Bizum
+                throw new ProceduralException("Pay method is not developed yet");
+                //payment = new BizumPayment(localJourneyService, user, wallet); //example
 
             case 'P': // PayPal
+                throw new ProceduralException("Pay method is not developed yet");
 
             case 'W': // Wallet
-
+                wallet = user.getUserWallet();
+                payment = new WalletPayment(wallet);
+                break;
             default:
                 throw new ProceduralException("Pay method not valid. Only C, B, P or W");
         }
+
+        realizePayment(localJourneyService.getImportCost());
     }
         // Internal operations
     private void calculateValues(GeographicPoint gP, LocalDateTime date) {
@@ -220,6 +233,10 @@ public class JourneyRealizeHandler {
     }
 
     private void realizePayment (BigDecimal imp) throws NotEnoughWalletException {
-        // Implementation
+        try {
+            payment.processPayment(imp);
+        } catch (NotEnoughWalletException e) {
+            throw new NotEnoughWalletException("Wallet payment failed: " + e.getMessage());
+        }
     }
 }

@@ -1,21 +1,13 @@
 package micromobility.payment;
 
-import data.UserAccount;
 import exception.NotEnoughWalletException;
-import micromobility.JourneyService;
+
+import java.math.BigDecimal;
 
 public abstract class Payment {
-    protected JourneyService service;
-    protected UserAccount user;
-
-    public Payment(JourneyService service, UserAccount user) {
-        if (service == null || user == null) {
-            throw new IllegalArgumentException("Service and User cannot be null");
-        }
-        this.service = service;
-        this.user = user;
+    public Payment() {
     }
 
-    public abstract void processPayment() throws NotEnoughWalletException;
+    public abstract void processPayment(BigDecimal imp) throws NotEnoughWalletException;
 
 }
