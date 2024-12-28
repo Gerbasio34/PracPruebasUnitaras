@@ -15,6 +15,7 @@ import services.Server;
 import services.smartfeatures.ArduinoMicroController;
 import services.smartfeatures.UnbondedBTSignalVMP;
 
+import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 
@@ -86,52 +87,24 @@ class JourneyRealizeHandlerFailTest {
             journeyHandler.unPairVehicle();
         });
     }
-    /*
-    @Test
-    @DisplayName("Test 5: QR scanning fails with corrupted image")
-    public void testScanQRCorruptedImage() throws ConnectException {
-        // Simulating a corrupted QR code scenario
-        arduinoMock.setQRCodeCorrupted(true);
-
-        assertThrows(CorruptedImgException.class, () -> {
-            unbondedBTSignal.BTbroadcast();
-            journeyHandler.scanQR();
-        });
-    }
 
     @Test
-    @DisplayName("Test 6: Server connection fails during pairing")
-    public void testServerConnectionFailure() throws ConnectException {
-        serverMock.setConnectionFailure(true);
-
-        assertThrows(ConnectException.class, () -> {
-            unbondedBTSignal.BTbroadcast();
-            journeyHandler.scanQR();
-        });
-    }
-
-    @Test
-    @DisplayName("Test 7: Start driving fails when vehicle state is incorrect")
-    public void testStartDrivingWithIncorrectState() throws ConnectException, CorruptedImgException, InvalidPairingArgsException {
-        vehicle.setNotAvailb();
+    @DisplayName("Test 5: Insufficient balance wallet")
+    public void testPayWithWallet() throws ConnectException, InvalidPairingArgsException, PairingNotFoundException, ProceduralException, CorruptedImgException, PMVNotAvailException {
+        user.getUserWallet().addFunds(new BigDecimal(1));
         unbondedBTSignal.BTbroadcast();
         journeyHandler.scanQR();
+        journeyHandler.startDriving();
+        // update location + stationID
+        StationID newLocationStation = new StationID("ST-12345-Madrid");
+        unbondedBTSignal.setStationID(newLocationStation);
+        unbondedBTSignal.BTbroadcast();
+        journeyHandler.setGp(new GeographicPoint(41.614159f, -0.625800f)); //Lleida (from madrid to lleida)
+        // end update location + stationID
+        journeyHandler.stopDriving();
+        journeyHandler.unPairVehicle();
 
-        assertThrows(PMVNotAvailException.class, () -> {
-            journeyHandler.startDriving();
-        });
+
+        assertThrows(NotEnoughWalletException.class, () -> journeyHandler.selectPaymentMethod('W'));
     }
-
-    @Test
-    @DisplayName("Test 8: Calculate import fails with invalid parameters")
-    public void testCalculateImportWithInvalidParams() throws ProceduralException {
-        float invalidDistance = -10.0f; // Negative distance
-        int invalidDuration = -20;     // Negative duration
-        float invalidAvgSpeed = -30.0f; // Negative average speed
-
-        assertThrows(InvalidPairingArgsException.class, () -> {
-            journeyHandler.calculateImport(invalidDistance, invalidDuration, invalidAvgSpeed, null);
-        });
-    }
-    */
 }
