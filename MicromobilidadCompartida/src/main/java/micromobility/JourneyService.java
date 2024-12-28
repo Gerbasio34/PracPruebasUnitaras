@@ -19,11 +19,11 @@ public class JourneyService {
     private LocalDateTime endDate; // End date
     private LocalTime endHour; // End time
     private BigDecimal importCost; // Total cost of the journey
-    private String serviceID; // Unique service ID
+    private ServiceID serviceID; // Unique service ID
     private boolean inProgress; // Service status (true = in progress)
 
     // Constructor
-    public JourneyService(String serviceID, GeographicPoint originPoint) {
+    public JourneyService(ServiceID serviceID, GeographicPoint originPoint) {
         this.serviceID = serviceID;
 
         this.initDate = null; // Set when the service starts
@@ -126,11 +126,11 @@ public class JourneyService {
         this.importCost = importCost;
     }
 
-    public String getServiceID() {
+    public ServiceID getServiceID() {
         return serviceID;
     }
 
-    public void setServiceID(String serviceID) {
+    public void setServiceID(ServiceID serviceID) {
         this.serviceID = serviceID;
     }
 

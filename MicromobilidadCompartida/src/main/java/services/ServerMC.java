@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ServerMC implements Server {
@@ -27,7 +28,7 @@ public class ServerMC implements Server {
     private static Map<String,JourneyService> activeJourneyServices = new HashMap<>(); // Manage Multiple Journeys all the same time
     private static ArrayList<JourneyService> recordsJourneyServices = new ArrayList<>(); // Matched vehicle to user mapping
 
-    public static ArrayList<String> paymentRecords = new ArrayList<>(); //
+    public static HashMap<UserAccount,ArrayList<String>>  paymentRecords = new HashMap<>(); //
 
     public static boolean statusConnection = true;
 
@@ -123,7 +124,7 @@ public class ServerMC implements Server {
         vehicleStationMap.put(veh, st); // Update the vehicle's station
 
         ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),veh.getId(),st.getId())); // same user with the same veh at the same station is unique
-        JourneyService journeyService = new JourneyService(serviceId.getId(), loc);
+        JourneyService journeyService = new JourneyService(serviceId, loc);
         journeyService.setOriginPoint(vehicle.getLocation());
         journeyService.setInitDate(LocalDateTime.now());
         journeyService.setInitHour(LocalTime.now());
@@ -154,7 +155,8 @@ public class ServerMC implements Server {
             throw new ConnectException("Connection error when register payment");
         }
 
-        String paymentRegister = String.format("%s_%s_%s_%c",servID.getId(),user.getId(),imp.toString(),payMeth);
-        paymentRecords.add(paymentRegister);
+        String paymentRegister = String.format("%s_%s_%c",servID.getId(),imp.toString(),payMeth);
+        ArrayList<String> list = paymentRecords.computeIfAbsent(user, k -> new ArrayList<>());
+        list.add(paymentRegister);
     }
 }

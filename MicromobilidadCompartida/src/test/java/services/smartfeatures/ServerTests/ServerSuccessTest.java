@@ -29,7 +29,7 @@ public class ServerSuccessTest {
         server = new ServerMC();
         vehicleID = new VehicleID("VH-123456-Patinete");
         stationID = new StationID("ST-12345-Lleida");
-        userAccount = new UserAccount("UA-imedio-2367");
+        userAccount = new UserAccount("UA-test-2367");
         location = new GeographicPoint(40.4168f, -3.7038f); // Example coordinates (Madrid)
 
         // Simulate a vehicle available in the system
@@ -81,7 +81,7 @@ public class ServerSuccessTest {
 
         assertDoesNotThrow(() -> server.registerPayment(serviceID, userAccount, amount, payMeth));
 
-        String expectedPayment = "UA-imedio-2367_VH-123456-Patinete_ST-12345-Lleida_UA-imedio-2367_50.0_C";
-        assertTrue(ServerMC.paymentRecords.contains(expectedPayment));
+        String expectedPayment = "UA-test-2367_VH-123456-Patinete_ST-12345-Lleida_50.0_C";
+        assertTrue(ServerMC.paymentRecords.get(userAccount).contains(expectedPayment));
     }
 }

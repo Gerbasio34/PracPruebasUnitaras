@@ -94,7 +94,7 @@ public class JourneyRealizeHandler {
         }
         ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),vehicleID.getId(),stID.getId())); // same user with the same veh at the same station is unique
         localJourneyService = new JourneyService(
-                serviceId.getId(),
+                serviceId,
                 this.gp
         );
 
