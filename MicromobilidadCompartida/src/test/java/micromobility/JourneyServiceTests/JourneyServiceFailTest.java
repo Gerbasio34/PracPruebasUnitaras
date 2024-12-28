@@ -23,26 +23,26 @@ class JourneyServiceFailTest {
     }
 
     @Test
-    @DisplayName("Test 1: Should throw exception when trying to start an already in-progress service")
+    @DisplayName("Test1: Should throw exception when trying to start an already in-progress service")
     void testServiceInitWhenInProgress() {
         journeyService.setServiceInit(); // Start the service
         assertThrows(IllegalStateException.class, journeyService::setServiceInit, "Should throw exception when trying to start an already in-progress service.");
     }
 
     @Test
-    @DisplayName("Test 2: Should throw exception when trying to finish a service that is not in progress")
+    @DisplayName("Test2: Should throw exception when trying to finish a service that is not in progress")
     void testServiceFinishWhenNotInProgress() {
         assertThrows(IllegalStateException.class, journeyService::setServiceFinish, "Should throw exception when trying to finish a service that is not in progress.");
     }
 
     @Test
-    @DisplayName("Test 3: Should throw exception when setting a negative distance")
+    @DisplayName("Test3: Should throw exception when setting a negative distance")
     void testSetDistanceWithNegativeValue() {
         assertThrows(IllegalArgumentException.class, () -> journeyService.setDistance(-5f), "Should throw exception when setting a negative distance.");
     }
 
     @Test
-    @DisplayName("Test 4: Should throw exception when setting a negative duration")
+    @DisplayName("Test4: Should throw exception when setting a negative duration")
     void testSetDurationWithNegativeValue() {
         assertThrows(IllegalArgumentException.class, () -> journeyService.setDuration(-10), "Should throw exception when setting a negative duration.");
     }

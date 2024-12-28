@@ -36,14 +36,14 @@ public class ServerFailTest {
     }
 
     @Test
-    @DisplayName("Test vehicle availability check failure for unavailable vehicle")
+    @DisplayName("Test1: Vehicle availability check failure for unavailable vehicle")
     public void testCheckPMVAvail_Fail_VehicleNotAvailable() {
         // Ensure exception is thrown when vehicle is not available
         assertThrows(ConnectException.class, () -> server.checkPMVAvail(vehicleID));
     }
 
     @Test
-    @DisplayName("Test pairing registration failure with invalid arguments")
+    @DisplayName("Test2: Pairing registration failure with invalid arguments")
     public void testRegisterPairing_Fail_InvalidArguments() {
         // Ensure exception is thrown for null user argument
         LocalDateTime now = LocalDateTime.now();
@@ -51,7 +51,7 @@ public class ServerFailTest {
     }
 
     @Test
-    @DisplayName("Test unpairing failure for non-paired vehicle")
+    @DisplayName("Test3: Unpairing failure for non-paired vehicle")
     public void testStopPairing_Fail_NotPaired() {
         // Ensure exception is thrown when trying to unpair a vehicle not paired to a user
         LocalDateTime now = LocalDateTime.now();
@@ -60,7 +60,7 @@ public class ServerFailTest {
     }
 
     @Test
-    @DisplayName("Test stop pairing failure due to invalid arguments")
+    @DisplayName("Test4: Stop pairing failure due to invalid arguments")
     public void testStopPairing_Fail_InvalidArguments() {
         // Ensure exception is thrown for null cost argument
         LocalDateTime now = LocalDateTime.now();
