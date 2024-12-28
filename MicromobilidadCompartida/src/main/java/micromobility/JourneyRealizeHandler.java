@@ -181,11 +181,13 @@ public class JourneyRealizeHandler {
 
             case 'W': // Wallet
                 wallet = user.getUserWallet();
-                payment = new WalletPayment(localJourneyService, user, wallet);
+                payment = new WalletPayment(wallet);
                 break;
             default:
                 throw new ProceduralException("Pay method not valid. Only C, B, P or W");
         }
+
+        realizePayment(localJourneyService.getImportCost());
     }
         // Internal operations
     private void calculateValues(GeographicPoint gP, LocalDateTime date) {
@@ -232,7 +234,7 @@ public class JourneyRealizeHandler {
 
     private void realizePayment (BigDecimal imp) throws NotEnoughWalletException {
         try {
-            payment.processPayment();
+            payment.processPayment(imp);
         } catch (NotEnoughWalletException e) {
             throw new NotEnoughWalletException("Wallet payment failed: " + e.getMessage());
         }
