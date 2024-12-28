@@ -1,9 +1,12 @@
 package data;
 
+import micromobility.payment.Wallet;
+
 import java.util.Objects;
 
 final public class UserAccount {
     private final String id;
+    private Wallet userWallet;
 
     public UserAccount(String id) {
 
@@ -21,6 +24,9 @@ final public class UserAccount {
     // Getters
     public String getId() {
         return id;
+    }
+    public Wallet getUserWallet() {
+        return userWallet;
     }
 
     @Override
