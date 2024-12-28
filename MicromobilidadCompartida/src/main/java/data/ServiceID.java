@@ -13,8 +13,8 @@ final public class ServiceID {
         if (id == null) {
             throw new IllegalArgumentException("ServiceID cannot be null");
         }
-        if (!id.matches("UA-[a-zA-Z]+-\\d{1,5}_VH-\\d{6}-[a-zA-Z]+_ST-\\d{5}-[a-zA-Z]+")) { // Ejemplo: formato "SV-123456"
-            throw new IllegalArgumentException("Invalid ServiceID format. Expected 'SV-123456-name'");
+        if (!id.matches("UA-[a-zA-Z]+-\\d{1,5}_VH-\\d{6}-[a-zA-Z]+_ST-\\d{5}-[a-zA-Z]+")) {
+            throw new IllegalArgumentException("Invalid ServiceID format. Expected 'UA-username-max5numbers_VH-123456-name_ST-12345-name'");
         }
         this.id = id;
     }

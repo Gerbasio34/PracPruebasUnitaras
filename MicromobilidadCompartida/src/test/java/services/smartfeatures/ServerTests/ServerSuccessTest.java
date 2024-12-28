@@ -6,6 +6,7 @@ import micromobility.PMVState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import services.Server;
 import services.ServerMC;
 
 import java.math.BigDecimal;
@@ -74,13 +75,13 @@ public class ServerSuccessTest {
     @Test
     @DisplayName("Test4: successful payment registration")
     public void testRegisterPayment_Success() throws Exception {
-        ServiceID serviceID = new ServiceID("SV-123456-test");
+        ServiceID serviceID = new ServiceID(String.format("%s_%s_%s",userAccount.getId(),vehicleID.getId(),stationID.getId()));
         BigDecimal amount = new BigDecimal("50.0");
         char payMeth = 'C';
 
         assertDoesNotThrow(() -> server.registerPayment(serviceID, userAccount, amount, payMeth));
 
-        String expectedPayment = "SV-123456-test_UA-imedio-2367_50.0_C";
+        String expectedPayment = "UA-imedio-2367_VH-123456-Patinete_ST-12345-Lleida_UA-imedio-2367_50.0_C";
         assertTrue(ServerMC.paymentRecords.contains(expectedPayment));
     }
 }
