@@ -15,6 +15,7 @@ import services.Server;
 import services.smartfeatures.ArduinoMicroController;
 import services.smartfeatures.UnbondedBTSignalVMP;
 
+import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 
@@ -85,6 +86,26 @@ class JourneyRealizeHandlerFailTest {
         assertThrows(PairingNotFoundException.class, () -> {
             journeyHandler.unPairVehicle();
         });
+    }
+
+    @Test
+    @DisplayName("Test 5: Insufficient balance wallet")
+    public void testPayWithWallet() throws ConnectException, InvalidPairingArgsException, PairingNotFoundException, ProceduralException, CorruptedImgException, PMVNotAvailException {
+        user.getUserWallet().addFunds(new BigDecimal(1));
+        unbondedBTSignal.BTbroadcast();
+        journeyHandler.scanQR();
+        journeyHandler.startDriving();
+        // update location + stationID
+        StationID newLocationStation = new StationID("ST-12345-Madrid");
+        unbondedBTSignal.setStationID(newLocationStation);
+        unbondedBTSignal.BTbroadcast();
+        journeyHandler.setGp(new GeographicPoint(41.614159f, -0.625800f)); //Lleida (from madrid to lleida)
+        // end update location + stationID
+        journeyHandler.stopDriving();
+        journeyHandler.unPairVehicle();
+
+
+        assertThrows(NotEnoughWalletException.class, () -> journeyHandler.selectPaymentMethod('W'));
     }
 
 }
