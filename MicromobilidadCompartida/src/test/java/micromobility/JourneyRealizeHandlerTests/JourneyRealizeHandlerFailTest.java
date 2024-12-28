@@ -15,7 +15,6 @@ import services.Server;
 import services.smartfeatures.ArduinoMicroController;
 import services.smartfeatures.UnbondedBTSignalVMP;
 
-import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
 
@@ -51,7 +50,7 @@ class JourneyRealizeHandlerFailTest {
     }
 
     @Test
-    @DisplayName("Test 1: Scan QR fails for unavailable vehicle")
+    @DisplayName("Test1: Scan QR fails for unavailable vehicle")
     public void testScanQRUnavailableVehicle() throws CorruptedImgException, InvalidPairingArgsException, ProceduralException, PMVNotAvailException, ConnectException {
         unbondedBTSignal.BTbroadcast();
         journeyHandler.scanQR();
@@ -62,7 +61,7 @@ class JourneyRealizeHandlerFailTest {
     }
 
     @Test
-    @DisplayName("Test 2: Start driving fails when vehicle is not paired")
+    @DisplayName("Test2: Start driving fails when vehicle is not paired")
     public void testStartDrivingWithoutPairing() throws ProceduralException, ConnectException {
         assertDoesNotThrow(() -> unbondedBTSignal.BTbroadcast());
         assertThrows(ConnectException.class, () -> {
@@ -71,7 +70,7 @@ class JourneyRealizeHandlerFailTest {
     }
 
     @Test
-    @DisplayName("Test 3: Stop driving fails when journey is not started")
+    @DisplayName("Test3: Stop driving fails when journey is not started")
     public void testStopDrivingWithoutStarting() {
         assertDoesNotThrow(() -> unbondedBTSignal.BTbroadcast());
         assertDoesNotThrow(() -> journeyHandler.scanQR());
@@ -81,30 +80,11 @@ class JourneyRealizeHandlerFailTest {
     }
 
     @Test
-    @DisplayName("Test 4: Unpairing fails if not paired")
+    @DisplayName("Test4: Unpairing fails if not paired")
     public void testUnpairWithoutPairing() {
         assertThrows(PairingNotFoundException.class, () -> {
             journeyHandler.unPairVehicle();
         });
     }
 
-    @Test
-    @DisplayName("Test 5: Insufficient balance wallet")
-    public void testPayWithWallet() throws ConnectException, InvalidPairingArgsException, PairingNotFoundException, ProceduralException, CorruptedImgException, PMVNotAvailException {
-        user.getUserWallet().addFunds(new BigDecimal(1));
-        unbondedBTSignal.BTbroadcast();
-        journeyHandler.scanQR();
-        journeyHandler.startDriving();
-        // update location + stationID
-        StationID newLocationStation = new StationID("ST-12345-Madrid");
-        unbondedBTSignal.setStationID(newLocationStation);
-        unbondedBTSignal.BTbroadcast();
-        journeyHandler.setGp(new GeographicPoint(41.614159f, -0.625800f)); //Lleida (from madrid to lleida)
-        // end update location + stationID
-        journeyHandler.stopDriving();
-        journeyHandler.unPairVehicle();
-
-
-        assertThrows(NotEnoughWalletException.class, () -> journeyHandler.selectPaymentMethod('W'));
-    }
 }

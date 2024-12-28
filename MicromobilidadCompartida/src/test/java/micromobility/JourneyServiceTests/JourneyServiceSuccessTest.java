@@ -26,7 +26,7 @@ class JourneyServiceSuccessTest {
     }
 
     @Test
-    @DisplayName("Test 1: Should initialize the service correctly")
+    @DisplayName("Test1: Should initialize the service correctly")
     void testServiceInit() {
         assertFalse(journeyService.getInProgress(), "Service InProgress should be false initially.");
         journeyService.setServiceInit();
@@ -34,7 +34,7 @@ class JourneyServiceSuccessTest {
     }
 
     @Test
-    @DisplayName("Test 2: Should finish the service correctly")
+    @DisplayName("Test2: Should finish the service correctly")
     void testServiceFinish() {
         journeyService.setServiceInit(); // Start the service
         journeyService.setEndDate(LocalDateTime.now());
@@ -46,7 +46,7 @@ class JourneyServiceSuccessTest {
     }
 
     @Test
-    @DisplayName("Test 3: Should set and get the distance correctly")
+    @DisplayName("Test3: Should set and get the distance correctly")
     void testSetDistance() {
         float distance = 10.5f;
         journeyService.setDistance(distance);
@@ -54,7 +54,7 @@ class JourneyServiceSuccessTest {
     }
 
     @Test
-    @DisplayName("Test 4: Should set and get the duration correctly")
+    @DisplayName("Test4: Should set and get the duration correctly")
     void testSetDuration() {
         int duration = 60; // Duration in minutes
         journeyService.setDuration(duration);
@@ -62,7 +62,7 @@ class JourneyServiceSuccessTest {
     }
 
     @Test
-    @DisplayName("Test 5: Should set and get the import cost correctly")
+    @DisplayName("Test5: Should set and get the import cost correctly")
     void testSetImportCost() {
         BigDecimal cost = new BigDecimal("25.75");
         journeyService.setImportCost(cost);
