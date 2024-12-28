@@ -18,7 +18,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-// Class that handles events and operations related to journey realization.
+/**
+ * Handles events and operations related to the realization of a journey,
+ * including QR scanning, pairing and unpairing vehicles, driving operations,
+ * and payment processing.
+ */
 public class JourneyRealizeHandler {
 
     // Class members
@@ -33,9 +37,14 @@ public class JourneyRealizeHandler {
     private Wallet wallet;
     private Payment payment;
 
-    // Constructors
+    /**
+     * Constructs a JourneyRealizeHandler with the specified user, geographic point, and vehicle.
+     *
+     * @param user The user associated with the journey.
+     * @param gp The geographic point representing the current location of the journey.
+     * @param vehicle The vehicle involved in the journey.
+     */
     public JourneyRealizeHandler(UserAccount user, GeographicPoint gp, PMVehicle vehicle) {
-        // Object initialization
         server = new ServerMC();
         arduino = new ArduinoMicroControllerVMP();
         this.gp = gp;
@@ -43,73 +52,123 @@ public class JourneyRealizeHandler {
         this.vehicle = vehicle;
     }
 
-    // Setter methods for injecting dependences
+    // Setter methods for injecting dependencies
+
+    /**
+     * Sets the server for the journey.
+     *
+     * @param server The server to set.
+     */
     public void setServer(Server server) {
         this.server = server;
     }
+
+    /**
+     * Sets the Arduino microcontroller for the journey.
+     *
+     * @param arduino The Arduino microcontroller to set.
+     */
     public void setArduino(ArduinoMicroController arduino) {
         this.arduino = arduino;
     }
+
+    /**
+     * Sets the user associated with the journey.
+     *
+     * @param user The user to set.
+     */
     public void setUser(UserAccount user) {
         this.user = user;
     }
+
+    /**
+     * Sets the geographic point representing the current location of the journey.
+     *
+     * @param gp The geographic point to set.
+     */
     public void setGp(GeographicPoint gp) {
         this.gp = gp;
     }
 
+    /**
+     * Sets the vehicle involved in the journey.
+     *
+     * @param vehicle The vehicle to set.
+     */
     public void setVehicle(PMVehicle vehicle) {
         this.vehicle = vehicle;
     }
 
-    //GETTERS
+    // Getter methods
+
+    /**
+     * Gets the station ID.
+     *
+     * @return The station ID.
+     */
     public StationID getStID() {
         return stID;
     }
 
-    public GeographicPoint getGp() { return gp;}
+    /**
+     * Gets the geographic point representing the current location of the journey.
+     *
+     * @return The geographic point.
+     */
+    public GeographicPoint getGp() {
+        return gp;
+    }
 
-    public JourneyService getLocalJourneyService(){
+    /**
+     * Gets the local journey service.
+     *
+     * @return The local journey service.
+     */
+    public JourneyService getLocalJourneyService() {
         return localJourneyService;
     }
 
-    // User interface input events
+    /**
+     * Scans the QR code, retrieves the vehicle ID, and performs necessary pairing operations.
+     *
+     * @throws ConnectException If there is an issue with the connection.
+     * @throws InvalidPairingArgsException If the pairing arguments are invalid.
+     * @throws CorruptedImgException If the QR code image is corrupted.
+     * @throws PMVNotAvailException If the vehicle is not available.
+     * @throws ProceduralException If a procedural issue occurs during the process.
+     */
     public void scanQR() throws ConnectException, InvalidPairingArgsException, CorruptedImgException, PMVNotAvailException, ProceduralException {
-        // Initialize the QRDecoderVMP instance before each test
         qrDecoder = new QRDecoderVMP();
-
-        //decode the QR to obtain the VehicleID
         VehicleID vehicleID = qrDecoder.getVehicleID(vehicle.getQRCode());
-
-        //setVehicleId
         vehicle.setId(vehicleID);
-
-        //check if the vehicle is available
         server.checkPMVAvail(vehicleID);
-
-        // Establish Bluetooth connection
         arduino.setBTconnection();
 
-        if (stID == null){
+        if (stID == null) {
             throw new ProceduralException("Bluetooth connection could not be completed");
         }
-        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),vehicleID.getId(),stID.getId())); // same user with the same veh at the same station is unique
-        localJourneyService = new JourneyService(
-                serviceId,
-                this.gp
-        );
 
-        //try to register the pairing of the user with the vehicle
+        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s", user.getId(), vehicleID.getId(), stID.getId()));
+        localJourneyService = new JourneyService(serviceId, this.gp);
+
         server.registerPairing(user, vehicleID, stID, gp, LocalDateTime.now());
-
         vehicle.setNotAvailb();
     }
 
+    /**
+     * Unpairs the vehicle and ends the journey, updating relevant details.
+     *
+     * @throws ConnectException If there is an issue with the connection.
+     * @throws InvalidPairingArgsException If the pairing arguments are invalid.
+     * @throws PairingNotFoundException If the pairing is not found.
+     * @throws ProceduralException If a procedural issue occurs during the process.
+     */
     public void unPairVehicle() throws ConnectException, InvalidPairingArgsException, PairingNotFoundException, ProceduralException {
         if (vehicle.getState() == PMVState.AVAILABLE) {
-            throw new PairingNotFoundException("This vehicle it's not paired");
+            throw new PairingNotFoundException("This vehicle is not paired");
         }
 
-        if (stID == null){
+        if (stID == null) {
             throw new ProceduralException("Bluetooth connection could not be completed");
         }
 
@@ -119,12 +178,17 @@ public class JourneyRealizeHandler {
         vehicle.setLocation(gp);
         calculateValues(vehicle.getLocation(), LocalDateTime.now());
         calculateImport(localJourneyService.getDistance(), localJourneyService.getDuration(), localJourneyService.getAvgSpeed(), localJourneyService.getEndDate());
-        server.stopPairing(user, vehicle.getId(),stID, vehicle.getLocation(), localJourneyService.getEndDate(), localJourneyService.getAvgSpeed(), localJourneyService.getDistance(), localJourneyService.getDuration(), localJourneyService.getImportCost());
+        server.stopPairing(user, vehicle.getId(), stID, vehicle.getLocation(), localJourneyService.getEndDate(), localJourneyService.getAvgSpeed(), localJourneyService.getDistance(), localJourneyService.getDuration(), localJourneyService.getImportCost());
         vehicle.setAvailb();
         localJourneyService.setServiceFinish();
     }
 
-    // Input events from the unbonded Bluetooth channel
+    /**
+     * Broadcasts the station ID received via Bluetooth.
+     *
+     * @param stID The station ID to broadcast.
+     * @throws ConnectException If the Station ID is null or there is a connection issue.
+     */
     public void broadcastStationID(StationID stID) throws ConnectException {
         if (stID == null) {
             throw new ConnectException("Null Station ID received.");
@@ -132,9 +196,13 @@ public class JourneyRealizeHandler {
         this.stID = stID;
     }
 
-    // Input events from the Arduino microcontroller channel
-    public void startDriving()
-            throws ConnectException, ProceduralException {
+    /**
+     * Starts the vehicle driving session, marking the vehicle as "under way".
+     *
+     * @throws ConnectException If there is a connection issue.
+     * @throws ProceduralException If a procedural issue occurs during the process.
+     */
+    public void startDriving() throws ConnectException, ProceduralException {
         if (vehicle.getState() == PMVState.UNDER_WAY) {
             throw new ProceduralException("Vehicle is already being driven");
         }
@@ -152,13 +220,17 @@ public class JourneyRealizeHandler {
         localJourneyService.setServiceInit();
     }
 
-    public void stopDriving()
-            throws ConnectException, ProceduralException {
-
+    /**
+     * Stops the vehicle driving session.
+     *
+     * @throws ConnectException If there is a connection issue.
+     * @throws ProceduralException If a procedural issue occurs during the process.
+     */
+    public void stopDriving() throws ConnectException, ProceduralException {
         if (vehicle.getState() != PMVState.UNDER_WAY) {
             throw new ProceduralException("Vehicle is not being driven");
         }
-        // before needs to reconnect with UnbondedBTSignal
+
         try {
             arduino.stopDriving();
         } catch (PMVPhisicalException e) {
@@ -166,41 +238,47 @@ public class JourneyRealizeHandler {
         }
     }
 
-    public void selectPaymentMethod (char opt) throws ProceduralException, NotEnoughWalletException, ConnectException {
-        // Implementation
+    /**
+     * Selects the payment method based on the user's input and processes the payment.
+     *
+     * @param opt The selected payment option: 'C' for Credit, 'B' for Bizum, 'P' for PayPal, 'W' for Wallet.
+     * @throws ProceduralException If the payment method is not valid or developed.
+     * @throws NotEnoughWalletException If there is not enough balance in the wallet.
+     * @throws ConnectException If there is a connection issue.
+     */
+    public void selectPaymentMethod(char opt) throws ProceduralException, NotEnoughWalletException, ConnectException {
         switch (opt) {
-            case 'C': // Credit
+            case 'C':
                 throw new ProceduralException("Pay method is not developed yet");
-
-            case 'B': // Bizum
+            case 'B':
                 throw new ProceduralException("Pay method is not developed yet");
-                //payment = new BizumPayment(localJourneyService, user, wallet); //example
-
-            case 'P': // PayPal
+            case 'P':
                 throw new ProceduralException("Pay method is not developed yet");
-
-            case 'W': // Wallet
+            case 'W':
                 wallet = user.getUserWallet();
                 payment = new WalletPayment(wallet);
                 break;
             default:
-                throw new ProceduralException("Pay method not valid. Only C, B, P or W");
+                throw new ProceduralException("Pay method not valid. Only C, B, P, or W");
         }
 
         realizePayment(localJourneyService.getImportCost());
     }
-        // Internal operations
+
+    // Internal operations
+
+    /**
+     * Calculates the journey values such as duration, distance, and average speed.
+     *
+     * @param gP The geographic point representing the destination.
+     * @param date The end date of the journey.
+     */
     private void calculateValues(GeographicPoint gP, LocalDateTime date) {
-        //Each second will represent minutes, this way we don't need to wait too much (in tests)
-        //instead of toMinutes() we use toSeconds()
-        localJourneyService.setDuration((int) Duration.between(localJourneyService.getInitHour(), date.toLocalTime()).toSeconds()); // change this toMinutes()
+        localJourneyService.setDuration((int) Duration.between(localJourneyService.getInitHour(), date.toLocalTime()).toSeconds());
 
         GeographicPoint originPoint = localJourneyService.getOriginPoint();
-
-        // Calculate distance between origin and destination
         localJourneyService.setDistance(originPoint.calculateDistance(gP));
 
-        // Calculate average speed
         long durationInMinutes = localJourneyService.getDuration();
         if (durationInMinutes > 0) {
             localJourneyService.setAvgSpeed((localJourneyService.getDistance() / durationInMinutes) * 60);
@@ -209,12 +287,20 @@ public class JourneyRealizeHandler {
         }
     }
 
+    /**
+     * Calculates the import (cost) of the journey based on distance, duration, speed, and time of day.
+     *
+     * @param dis The distance covered during the journey.
+     * @param dur The duration of the journey in seconds.
+     * @param avSp The average speed of the vehicle.
+     * @param date The end date of the journey.
+     */
     private void calculateImport(float dis, int dur, float avSp, LocalDateTime date) {
-        BigDecimal ratePerKm = new BigDecimal("1.5"); // Rate per kilometer
-        BigDecimal ratePerMinute = new BigDecimal("0.5"); // Rate per minute
-        float speedPenaltyThreshold = 25.0f; // Average speed limit
-        BigDecimal speedPenaltyRate = new BigDecimal("0.2"); // 20% speed penalty
-        BigDecimal weekendSurcharge = new BigDecimal("0.15"); // 15% surcharge on weekends
+        BigDecimal ratePerKm = new BigDecimal("1.5");
+        BigDecimal ratePerMinute = new BigDecimal("0.5");
+        float speedPenaltyThreshold = 25.0f;
+        BigDecimal speedPenaltyRate = new BigDecimal("0.2");
+        BigDecimal weekendSurcharge = new BigDecimal("0.15");
 
         boolean isWeekend = (date.getDayOfWeek().getValue() == 6 || date.getDayOfWeek().getValue() == 7);
         BigDecimal baseImport = ratePerKm.multiply(BigDecimal.valueOf(dis)).add(ratePerMinute.multiply(BigDecimal.valueOf(dur)));
@@ -232,7 +318,13 @@ public class JourneyRealizeHandler {
         localJourneyService.setImportCost(baseImport.add(speedPenalty).add(surcharge).setScale(2, BigDecimal.ROUND_HALF_UP));
     }
 
-    private void realizePayment (BigDecimal imp) throws NotEnoughWalletException {
+    /**
+     * Processes the payment based on the calculated cost.
+     *
+     * @param imp The import (cost) of the journey.
+     * @throws NotEnoughWalletException If there is insufficient funds in the wallet.
+     */
+    private void realizePayment(BigDecimal imp) throws NotEnoughWalletException {
         try {
             payment.processPayment(imp);
         } catch (NotEnoughWalletException e) {
