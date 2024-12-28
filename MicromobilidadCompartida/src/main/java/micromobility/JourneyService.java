@@ -1,6 +1,7 @@
 package micromobility;
 
 import data.GeographicPoint;
+import data.ServiceID;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

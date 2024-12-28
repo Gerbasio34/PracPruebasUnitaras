@@ -1,9 +1,6 @@
 package micromobility;
 
-import data.GeographicPoint;
-import data.StationID;
-import data.UserAccount;
-import data.VehicleID;
+import data.*;
 import exception.*;
 import services.Server;
 import services.ServerMC;
@@ -90,10 +87,9 @@ public class JourneyRealizeHandler {
         if (stID == null){
             throw new ProceduralException("Bluetooth connection could not be completed");
         }
-
-        String serviceId = String.format("%s_%s_%s",user.getId(),vehicleID,stID); // same user with the same veh at the same station is unique
+        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),vehicleID.getId(),stID.getId())); // same user with the same veh at the same station is unique
         localJourneyService = new JourneyService(
-                serviceId,
+                serviceId.getId(),
                 this.gp
         );
 
@@ -165,7 +161,22 @@ public class JourneyRealizeHandler {
         }
     }
 
-    // Internal operations
+    public void selectPaymentMethod (char opt) throws ProceduralException, NotEnoughWalletException, ConnectException {
+        // Implementation
+        switch (opt) {
+            case 'C': // Credit
+
+            case 'B': // Bizum
+
+            case 'P': // PayPal
+
+            case 'W': // Wallet
+
+            default:
+                throw new ProceduralException("Pay method not valid. Only C, B, P or W");
+        }
+    }
+        // Internal operations
     private void calculateValues(GeographicPoint gP, LocalDateTime date) {
         //Each second will represent minutes, this way we don't need to wait too much (in tests)
         //instead of toMinutes() we use toSeconds()
@@ -206,5 +217,9 @@ public class JourneyRealizeHandler {
         }
 
         localJourneyService.setImportCost(baseImport.add(speedPenalty).add(surcharge).setScale(2, BigDecimal.ROUND_HALF_UP));
+    }
+
+    private void realizePayment (BigDecimal imp) throws NotEnoughWalletException {
+        // Implementation
     }
 }
