@@ -11,36 +11,38 @@ import micromobility.PMVState;
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
-
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+/**
+ * Implementation of the server for managing PMVehicles, user pairing, and journey services.
+ * Simulates database interactions using in-memory data structures like HashMaps and ArrayLists.
+ */
 public class ServerMC implements Server {
 
-    // Simulation of a database using HashMaps
-    public static Map<VehicleID, PMVehicle> vehicleAvailability = new HashMap<>(); // true if available, false if not
-    public static Map<VehicleID, StationID> vehicleStationMap = new HashMap<>(); // Vehicle to station mapping
-    public static Map<VehicleID, UserAccount> vehicleUserMap = new HashMap<>(); // Matched vehicle to user mapping
-
-    private static Map<String,JourneyService> activeJourneyServices = new HashMap<>(); // Manage Multiple Journeys all the same time
-    private static ArrayList<JourneyService> recordsJourneyServices = new ArrayList<>(); // Matched vehicle to user mapping
-
-    public static HashMap<UserAccount,ArrayList<String>>  paymentRecords = new HashMap<>(); //
-
+    // Simulated database
+    public static Map<VehicleID, PMVehicle> vehicleAvailability = new HashMap<>();
+    public static Map<VehicleID, StationID> vehicleStationMap = new HashMap<>();
+    public static Map<VehicleID, UserAccount> vehicleUserMap = new HashMap<>();
+    private static Map<String, JourneyService> activeJourneyServices = new HashMap<>();
+    private static ArrayList<JourneyService> recordsJourneyServices = new ArrayList<>();
+    public static HashMap<UserAccount, ArrayList<String>> paymentRecords = new HashMap<>();
     public static boolean statusConnection = true;
 
+    /**
+     * Verifies if a PMVehicle is available for pairing.
+     *
+     * @param vhID The ID of the vehicle to check.
+     * @throws PMVNotAvailException if the vehicle is not available.
+     * @throws ConnectException if the vehicle ID is null or not found.
+     */
     @Override
     public void checkPMVAvail(VehicleID vhID) throws PMVNotAvailException, ConnectException {
         if (vhID == null) {
             throw new ConnectException("VehicleID is null, unable to connect to server.");
         }
 
-        // Verify if the vehicle is available
         PMVehicle vehicle = vehicleAvailability.get(vhID);
-        System.out.println(vehicle);
         if (vehicle == null) {
             throw new ConnectException("VehicleID not found in the system.");
         }
@@ -50,19 +52,28 @@ public class ServerMC implements Server {
         }
     }
 
+    /**
+     * Registers a pairing between a user and a PMVehicle at a specific station and location.
+     *
+     * @param user The user account.
+     * @param veh The vehicle ID.
+     * @param st The station ID.
+     * @param loc The geographic location.
+     * @param date The pairing date and time.
+     * @throws InvalidPairingArgsException if any of the arguments are null.
+     * @throws ConnectException if the vehicle is not available or not at the specified station.
+     */
     @Override
     public void registerPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date) throws InvalidPairingArgsException, ConnectException {
         if (user == null || veh == null || st == null || loc == null || date == null) {
             throw new InvalidPairingArgsException("One or more arguments are null.");
         }
 
-        // Verify that the vehicle is available
         PMVehicle vehicle = vehicleAvailability.get(veh);
         if (vehicle == null) {
             throw new ConnectException("Vehicle is not available or does not exist.");
         }
 
-        // Verify that the vehicle is at the specified station
         StationID currentStation = vehicleStationMap.get(veh);
         if (currentStation == null || !currentStation.equals(st)) {
             throw new ConnectException("Vehicle is not at the specified station.");
@@ -71,6 +82,21 @@ public class ServerMC implements Server {
         setPairing(user, veh, st, loc, date);
     }
 
+    /**
+     * Stops the pairing between a user and a PMVehicle, completing the journey service.
+     *
+     * @param user The user account.
+     * @param veh The vehicle ID.
+     * @param st The station ID.
+     * @param loc The geographic location.
+     * @param date The end date and time of the pairing.
+     * @param avSp The average speed during the journey.
+     * @param dist The distance traveled.
+     * @param dur The duration of the journey.
+     * @param imp The cost of the journey.
+     * @throws InvalidPairingArgsException if any of the arguments are null.
+     * @throws ConnectException if the vehicle is not paired with the user.
+     */
     @Override
     public void stopPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date, float avSp, float dist, int dur, BigDecimal imp) throws InvalidPairingArgsException, ConnectException {
         if (user == null || veh == null || st == null || loc == null || date == null || imp == null) {
@@ -79,26 +105,19 @@ public class ServerMC implements Server {
 
         PMVehicle vehicle = vehicleAvailability.get(veh);
 
-        // Verify that the vehicle was paired with the user
         UserAccount pairedUser = vehicleUserMap.get(veh);
         if (pairedUser == null || !pairedUser.equals(user)) {
             throw new ConnectException("Vehicle is not paired with the specified user.");
         }
 
-        // Register the service completion (persistent record simulation)
-        // System.out.println("Service completed: " + user + " - " + veh + " - " + st + " - " + loc + " - " + date + " - " + avSp + " - " + dist + " - " + dur + " - " + imp);
-
-        // Mark the vehicle as available and remove the pairing
         vehicle.setAvailb();
         vehicleUserMap.remove(veh);
         registerLocation(veh, st);
 
-        // Sets Server
-        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),veh.getId(),st.getId())); // same user with the same veh at the same station is unique
+        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s", user.getId(), veh.getId(), st.getId()));
         JourneyService journeyService = activeJourneyServices.get(serviceId.getId());
         activeJourneyServices.remove(serviceId.getId());
 
-        // Sets journey
         journeyService.setEndPoint(loc);
         journeyService.setEndDate(date.toLocalDate().atStartOfDay());
         journeyService.setEndHour(date.toLocalTime());
@@ -114,49 +133,76 @@ public class ServerMC implements Server {
         }
     }
 
+    /**
+     * Sets a pairing between a user and a PMVehicle.
+     *
+     * @param user The user account.
+     * @param veh The vehicle ID.
+     * @param st The station ID.
+     * @param loc The geographic location.
+     * @param date The pairing date and time.
+     */
     @Override
     public void setPairing(UserAccount user, VehicleID veh, StationID st, GeographicPoint loc, LocalDateTime date) {
-        PMVehicle vehicle = vehicleAvailability.computeIfAbsent(veh, k -> new PMVehicle(
-                PMVState.AVAILABLE, loc, 0.0
-        ));
+        PMVehicle vehicle = vehicleAvailability.computeIfAbsent(veh, k -> new PMVehicle(PMVState.AVAILABLE, loc, 0.0));
         vehicle.setId(veh);
         vehicle.setNotAvailb();
-        vehicleUserMap.put(veh, user); // Assign user to the vehicle
-        vehicleStationMap.put(veh, st); // Update the vehicle's station
+        vehicleUserMap.put(veh, user);
+        vehicleStationMap.put(veh, st);
 
-        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s",user.getId(),veh.getId(),st.getId())); // same user with the same veh at the same station is unique
+        ServiceID serviceId = new ServiceID(String.format("%s_%s_%s", user.getId(), veh.getId(), st.getId()));
         JourneyService journeyService = new JourneyService(serviceId, loc);
         journeyService.setOriginPoint(vehicle.getLocation());
         journeyService.setInitDate(LocalDateTime.now());
         journeyService.setInitHour(LocalTime.now());
         journeyService.setServiceInit();
-        activeJourneyServices.put(serviceId.getId(),journeyService);
+        activeJourneyServices.put(serviceId.getId(), journeyService);
     }
 
+    /**
+     * Registers the completion of a journey service.
+     *
+     * @param s The journey service to register.
+     * @throws PairingNotFoundException if the service is null.
+     */
     @Override
     public void unPairRegisterService(JourneyService s) throws PairingNotFoundException {
         if (s == null) {
             throw new PairingNotFoundException("Journey service is null.");
         }
-
         s.setServiceFinish();
         recordsJourneyServices.add(s);
     }
 
+    /**
+     * Updates the location of a PMVehicle at a specific station.
+     *
+     * @param veh The vehicle ID.
+     * @param st The station ID.
+     */
     @Override
     public void registerLocation(VehicleID veh, StationID st) {
         if (veh != null && st != null) {
-            vehicleStationMap.put(veh, st); // Update the vehicle's location
+            vehicleStationMap.put(veh, st);
         }
     }
 
+    /**
+     * Registers a payment for a journey service.
+     *
+     * @param servID The service ID.
+     * @param user The user account.
+     * @param imp The payment amount.
+     * @param payMeth The payment method.
+     * @throws ConnectException if the server connection fails.
+     */
     @Override
     public void registerPayment(ServiceID servID, UserAccount user, BigDecimal imp, char payMeth) throws ConnectException {
-        if(!statusConnection){
-            throw new ConnectException("Connection error when register payment");
+        if (!statusConnection) {
+            throw new ConnectException("Connection error when registering payment.");
         }
 
-        String paymentRegister = String.format("%s_%s_%c",servID.getId(),imp.toString(),payMeth);
+        String paymentRegister = String.format("%s_%s_%c", servID.getId(), imp.toString(), payMeth);
         ArrayList<String> list = paymentRecords.computeIfAbsent(user, k -> new ArrayList<>());
         list.add(paymentRegister);
     }
