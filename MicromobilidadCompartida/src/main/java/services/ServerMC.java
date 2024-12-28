@@ -40,6 +40,7 @@ public class ServerMC implements Server {
 
         // Verify if the vehicle is available
         PMVehicle vehicle = vehicleAvailability.get(vhID);
+        System.out.println(vehicle);
         if (vehicle == null) {
             throw new ConnectException("VehicleID not found in the system.");
         }

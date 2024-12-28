@@ -14,6 +14,7 @@ import services.ServerMC;
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +30,7 @@ public class ServerFailTest {
     public void setUp() {
         // Initialize the server and mock data before each test
         server = new ServerMC();
-        vehicleID = new VehicleID("VH-123456-Patinete");
+        vehicleID = new VehicleID("VH-123456-Motorola");
         stationID = new StationID("ST-12345-Madrid");
         userAccount = new UserAccount("UA-Romero-2344");
         location = new GeographicPoint(40.4168f, -3.7038f); // Example coordinates (Madrid)
