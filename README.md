@@ -27,4 +27,4 @@ This project implements a simplified shared micromobility system, focusing on th
 
 1. Clone the repository:
    ```bash
-   git clone <repository URL>
+   git clone <https://github.com/Gerbasio34/PracPruebasUnitaras>
